@@ -1,0 +1,5 @@
+//Figma Design
+https://www.figma.com/site/qgCuJsUEBmGfb2g8V79394/Untitled?node-id=0-1&p=f&t=rN81OkjVa6Scq5FG-0
+
+// API Back End
+https://luminous-cherry-91ced558b9.strapiapp.com

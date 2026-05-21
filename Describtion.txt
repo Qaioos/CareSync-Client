@@ -1,0 +1,35 @@
+*   **Design Profile:** Analytical, dense but organized, authoritative.
+
+### B. Registered Nurse (RN)
+*   **Goal:** Manage personal shifts, track daily tasks, and maintain patient care standards.
+*   **Needs:** Clear task lists, easy shift-swap requests, and well-being tracking (break timers).
+*   **Design Profile:** Human-centric, calm, high usability, stress-reducing.
+
+## 3. Core Feature Modules
+
+### 3.1. Supervisor Dashboard (Command Center)
+*   **Predictive Analytics:** "Nurse Coverage vs. Demand" rolling models to anticipate staffing gaps.
+*   **Staffing Efficiency Metrics:** Real-time tracking of overtime, agency use, and shift alignment.
+*   **Critical Alerts:** High-priority notification system for immediate clinical needs (e.g., Code Blue).
+*   **Department Overview:** Quick-view cards for ICU, Emergency, and Med/Surg unit ratios.
+
+### 3.2. Nurse Dashboard (Clinical Hub)
+*   **Shift Management:** View current shift progress, upcoming schedules, and break timing.
+*   **Task Orchestration:** Interactive checklist for medication administration and patient vitals.
+*   **Patient Assignment:** Direct view of assigned rooms and patient stability statuses.
+*   **Shift Swap System:** Integrated workflow for requesting and approving schedule changes.
+
+### 3.3. Authentication & Onboarding
+*   **Secure Access:** HIPAA-compliant login and registration flows.
+*   **Verified Network:** Staff verification via Hospital ID and professional credentials.
+
+## 4. Design Principles (Clinical Precision System)
+*   **Palette:** Deep Teal (#0F766E) and Medical Cyan (#14B8A6) for trust and professionalism.
+*   **Typography:** Geist (Sans-serif) for high legibility in fast-paced environments.
+*   **Geometry:** 16px–24px rounded corners to soften the clinical experience.
+*   **Elevation:** Soft floating cards with multi-layered shadows to establish hierarchy without clutter.
+
+## 5. Technical Requirements
+*   **Device Support:** Desktop-first (optimized for nursing stations/admin desks) with responsive tablet support.
+*   **Compliance:** HIPAA-ready architecture focusing on data privacy and enterprise-grade encryption.
+*   **Integrations:** Designed to layer over existing Electronic Health Records (EHR) and Hospital Information Systems (HIS).

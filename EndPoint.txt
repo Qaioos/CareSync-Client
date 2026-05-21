@@ -1,0 +1,141 @@
+إليك التوثيق البرمجي الكامل والمنظم بصيغة Markdown احترافية وجاهزة للنسخ مباشرة. يمكنك حفظ هذا النص في ملف باسم API_DOCUMENTATION.md في مجلد مشروعك ليكون مرجعاً سريعاً لك أثناء بناء الـ Frontend.
+
+🏥 Hospital Management System - API Documentation (Strapi v5)
+🌐 Base URL
+Development (Localhost): http://localhost:1337/api
+
+1. Authentication & Users (/auth, /users)
+إدارة تسجيل الدخول وصلاحيات المستخدمين والممرضات.
+
+🔐 Login (تسجيل الدخول)
+Method: POST
+
+URL: {{BASE_URL}}/auth/local
+
+Request Body (JSON):
+
+JSON
+{
+  "identifier": "username_or_email",
+  "password": "user_password"
+}
+Response: يرجع كائن يحتوي على الـ jwt والـ user الحالي.
+
+👤 Get Current User Data (جلب بيانات المستخدم الحالي)
+Method: GET
+
+URL: {{BASE_URL}}/users/me
+
+Headers: Authorization: Bearer <JWT_TOKEN>
+
+2. Department Metrics (/department-metrics)
+تغذية كروت الـ Dashboard والمخططات البيانية بحالة الأقسام ومستوى الضغط الحقيقي.
+
+📊 Get All Metrics (جلب حالات الأقسام الحيوية)
+Method: GET
+
+URL: {{BASE_URL}}/department-metrics
+
+➕ Create/Update Metric (إضافة أو تحديث بيانات قسم)
+Method: POST
+
+URL: {{BASE_URL}}/department-metrics
+
+Request Body (JSON):
+
+JSON
+{
+  "data": {
+    "Department_Name": "Emergency", 
+    "ActiveBeds": 38,
+    "TotalBeds": 40,
+    "WaitingCount": 25,
+    "Situation": "High_Vol"
+  }
+}
+⚠️ خيارات الحقول الإلزامية (Enums):
+
+Department_Name: مسموح فقط بـ (ICE, Emergency, Med_Surg).
+
+Situation: مسموح فقط بـ (High_Vol, Normal).
+
+3. Requests (/requests)
+إرسال طلبات الإجازات وتبديل الورديات، وتغذية تنبيهات لوحة تحكم المشرف.
+
+🔔 Get All Requests (جلب جميع الطلبات مع بيانات المرسل)
+Method: GET
+
+URL: {{BASE_URL}}/requests?populate=Sender
+
+📩 Create New Request (إرسال طلب جديد)
+Method: POST
+
+URL: {{BASE_URL}}/requests
+
+Request Body (JSON):
+
+JSON
+{
+  "data": {
+    "RequestType": "Shift_Swap",
+    "Details": "Night shift coverage needed for family reasons.",
+    "Situation": "Warning"
+  }
+}
+⚠️ خيارات الحقول الإلزامية (Enums):
+
+RequestType: مسموح فقط بـ (Shift_Swap, Leave_Request).
+
+Situation: مسموح فقط بـ (Critical, Warning).
+
+4. Shifts (/shifts)
+جدولة وعرض ساعات العمل وتوزيع الممرضات على الأقسام.
+
+📅 Get All Shifts (جلب جدول الورديات بالكامل مع الطاقم المسؤول)
+Method: GET
+
+URL: {{BASE_URL}}/shifts?populate=AssignedStaff
+
+🛠️ Create New Shift (جدولة وردية جديدة)
+Method: POST
+
+URL: {{BASE_URL}}/shifts
+
+Request Body (JSON):
+
+JSON
+{
+  "data": {
+    "Department": "Emergency",
+    "ShiftType": "Night",
+    "StartTime": "2026-05-22T22:00:00.000Z",
+    "EndTime": "2026-05-23T06:00:00.000Z"
+  }
+}
+5. Tasks (/tasks)
+إسناد ومتابعة المهام الطبية والتمريضية اليومية داخل المستشفى.
+
+📋 Get All Tasks (جلب قائمة المهام)
+Method: GET
+
+URL: {{BASE_URL}}/tasks
+
+✏️ Create New Task (إنشاء مهمة جديدة)
+Method: POST
+
+URL: {{BASE_URL}}/tasks
+
+Request Body (JSON):
+
+JSON
+{
+  "data": {
+    "Task_Title": "Check Vital Signs",
+    "Description": "Check vital signs for patients in rooms 102 and 105",
+    "DueDate": "2026-05-22T10:00:00.000Z"
+  }
+}
+💡 قواعد هيكلية للـ Frontend (React / Axios)
+الوصول للبيانات بـ Strapi v5: الاستجابة الراجعة من عمليات الـ GET تقع مباشرة تحت response.data على شكل مصفوفة نظيفة، دون الحاجة للمرور عبر كائن .attributes القديم.
+
+العلاقات (Relationships): عند الحاجة لجلب بيانات الجداول المربوطة (مثل المستخدم الذي أرسل الطلب أو الطاقم المسؤول عن الوردية)، يجب دائماً إلحاق الهيدر بـ ?populate=FieldName في نهاية الـ URL لتجنب استرجاع كائنات فارغة.
