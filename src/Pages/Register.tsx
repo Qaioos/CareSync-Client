@@ -4,7 +4,7 @@ const Register = () => {
   return (
     <div>
       <RegisterUI></RegisterUI>
-    </div>
+  </div>
   )
 }
 
