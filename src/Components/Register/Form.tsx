@@ -4,8 +4,10 @@ import { GiCancel } from "react-icons/gi";
 import { useState, useEffect, useRef } from "react";
 import axios from "../../Config/axios";
 import useAuth from "../../Hook/authUser/useAuth";
-import type{ AuthResponse } from "../../Types/api.responses";
+import type { AuthResponse } from "../../Types/api.responses";
 import type { StrapiUser } from "../../Types/api.responses";
+import { Link } from "react-router-dom";
+import Loading from "../Ui/LodaingSign";
 
 const BAES_URL = "/auth/local/register";
 
@@ -15,10 +17,12 @@ const PWS_RGX =
 const EMAIL_RGX = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,20}$/;
 
 const Form = () => {
-    const { setAuth ,signUp } = useAuth();
+    const { setAuth, signUp } = useAuth();
+
+    const [isLodaing, setisLodaing] = useState(false);
 
     const nameRef = useRef<HTMLInputElement | null>(null);
-    const errRef = useRef<HTMLElement>(null);
+    const errRef = useRef<HTMLParagraphElement | null>(null);
 
     const [username, setUserName] = useState<string>("");
     const [foucsName, setFoucsName] = useState<boolean>(false);
@@ -50,6 +54,8 @@ const Form = () => {
 
     const handelSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setisLodaing(true);
+
         if (!isFormValid) {
             setErrMsg("Please make sure that all conditions are met first.!! ");
             setIsErr(true);
@@ -71,19 +77,19 @@ const Form = () => {
 
             const accrssToken = response?.data?.jwt;
 
-            const User :StrapiUser = response?.data?.user
+            const User: StrapiUser = response?.data?.user;
 
             console.log(response.data);
             console.log(accrssToken);
 
-            setAuth({User, username, accrssToken });
-            signUp(User,accrssToken)
+            setAuth({ User, username, accrssToken });
+            signUp(User, accrssToken);
             setemail("");
             setUserName("");
             setpws("");
             setMatchPws("");
-
         } catch (err) {
+            setIsErr(true);
             if (!err?.response) {
                 setErrMsg("No Server Response");
             } else if (err.response?.status === 409) {
@@ -91,6 +97,8 @@ const Form = () => {
             } else {
                 setErrMsg("Registration Failed");
             }
+        } finally {
+            setisLodaing(false);
         }
     };
 
@@ -221,9 +229,14 @@ const Form = () => {
             <p>
                 Already have an account?{" "}
                 <span className="text-secondary cursor-pointer">
-                    Log in here
+                    <Link to={"/login"}>Log in here</Link>
                 </span>
             </p>
+            {isLodaing ? (
+                <Loading fullPage={true} message="Waiting for Loading..." />
+            ) : (
+                ""
+            )}
         </form>
     );
 };
