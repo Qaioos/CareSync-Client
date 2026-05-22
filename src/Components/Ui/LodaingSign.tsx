@@ -1,8 +1,8 @@
 import { ImSpinner2 } from "react-icons/im";
 
 interface LoadingProps {
-  fullPage?: boolean; // خيار لجعل التحميل يغطي الشاشة كاملة أو يملأ الحاوية فقط
-  message?: string;   // نص اختياري يظهر أسفل أيقونة التحميل
+  fullPage?: boolean; 
+  message?: string; 
 }
 
 export default function Loading({ fullPage = false, message = "جاري التحميل..." }: LoadingProps) {
@@ -12,10 +12,8 @@ export default function Loading({ fullPage = false, message = "جاري التح
         fullPage ? "fixed inset-0 bg-white/80 backdrop-blur-sm z-50 w-screen h-screen" : "w-full h-full p-4"
       }`}
     >
-      {/* أيقونة التحميل الملتفة مع فئات التدوير والتلوين من Tailwind */}
       <ImSpinner2 className="animate-spin text-primary h-10 w-10 text-center" />
       
-      {/* النص الإرشادي المرافق للحركة */}
       {message && (
         <p className="text-sm font-medium text-gray-600 tracking-wide animate-pulse">
           {message}
