@@ -2,12 +2,21 @@
 import { IoMdCheckmarkCircle } from "react-icons/io";
 import { GiCancel } from "react-icons/gi";
 import { useState, useEffect, useRef } from "react";
+import axios from "../../Config/axios";
+import useAuth from "../../Hook/authUser/useAuth";
+import type{ AuthResponse } from "../../Types/api.responses";
+import type { StrapiUser } from "../../Types/api.responses";
+
+const BAES_URL = "/auth/local/register";
 
 const USER_NAME_RGX = /^[A-Za-z0-9_]{3,20}$/;
-const PWS_RGX =/^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%])[A-Za-z0-9!@#$%]{8,24}$/;
+const PWS_RGX =
+    /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%])[A-Za-z0-9!@#$%]{8,24}$/;
 const EMAIL_RGX = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,20}$/;
 
 const Form = () => {
+    const { setAuth ,signUp } = useAuth();
+
     const nameRef = useRef<HTMLInputElement | null>(null);
     const errRef = useRef<HTMLElement>(null);
 
@@ -39,17 +48,57 @@ const Form = () => {
         setIsErr(false);
     }, [username, pws, email]);
 
-const handelSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if(!isFormValid){
-        setErrMsg("Please make sure that all conditions are met first.!! ");
-        setIsErr(true);
-        return;
-    }
-}
+    const handelSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!isFormValid) {
+            setErrMsg("Please make sure that all conditions are met first.!! ");
+            setIsErr(true);
+            return;
+        }
+
+        try {
+            const response = await axios.post<AuthResponse>(
+                BAES_URL,
+                JSON.stringify({
+                    username: username,
+                    email: email,
+                    password: pws,
+                }),
+                {
+                    headers: { "Content-Type": "application/json" },
+                },
+            );
+
+            const accrssToken = response?.data?.jwt;
+
+            const User :StrapiUser = response?.data?.user
+
+            console.log(response.data);
+            console.log(accrssToken);
+
+            setAuth({User, username, accrssToken });
+            signUp(User,accrssToken)
+            setemail("");
+            setUserName("");
+            setpws("");
+            setMatchPws("");
+
+        } catch (err) {
+            if (!err?.response) {
+                setErrMsg("No Server Response");
+            } else if (err.response?.status === 409) {
+                setErrMsg("Username Taken");
+            } else {
+                setErrMsg("Registration Failed");
+            }
+        }
+    };
 
     return (
-        <form onSubmit={handelSubmit} className="flex flex-col  relative my-4 w-70 ">
+        <form
+            onSubmit={handelSubmit}
+            className="flex flex-col  relative my-4 w-70 "
+        >
             {iserr && (
                 <p
                     ref={errRef}
@@ -85,7 +134,10 @@ const handelSubmit = (e: React.FormEvent) => {
                 className=" p-1.5 rounded-xl CustomShadow border border-green-600 outline-none bg-white"
             />
             {foucsName && username && !isValidName && (
-                <p className="text-sm bg-black text-white absolute top-20  mt-2 p-1"> ⚠️The name must be at least 4 letters long</p>
+                <p className="text-sm bg-black text-white absolute top-20  mt-2 p-1">
+                    {" "}
+                    ⚠️The name must be at least 4 letters long
+                </p>
             )}
             <label
                 htmlFor="email"
@@ -103,10 +155,10 @@ const handelSubmit = (e: React.FormEvent) => {
                 )}
             </label>
             <input
-                type = "email"
-                value = {email}
-                onChange = {(e) => setemail(e.target.value)}
-                className = " p-1.5 rounded-xl CustomShadow border border-green-600 outline-none bg-white"
+                type="email"
+                value={email}
+                onChange={(e) => setemail(e.target.value)}
+                className=" p-1.5 rounded-xl CustomShadow border border-green-600 outline-none bg-white"
             />
             <label
                 htmlFor="password"
@@ -132,9 +184,11 @@ const handelSubmit = (e: React.FormEvent) => {
                 className=" p-1.5 rounded-xl CustomShadow border border-green-600 outline-none bg-white"
             />
             {foucsPws && pws && !isValidPws && (
-            <p className="text-sm absolute bottom-15 h-30 w-70 bg-black text-white  mt-2 p-1">
-              ℹ️   It must be 8 characters or more, containing at least one capital letter, at least one number (0-9), and at least one special character.
-            </p>
+                <p className="text-sm absolute bottom-15 h-30 w-70 bg-black text-white  mt-2 p-1">
+                    ℹ️ It must be 8 characters or more, containing at least one
+                    capital letter, at least one number (0-9), and at least one
+                    special character.
+                </p>
             )}
             <label
                 htmlFor="Confirm"
@@ -153,6 +207,7 @@ const handelSubmit = (e: React.FormEvent) => {
             </label>
             <input
                 type="password"
+                value={matchPws}
                 onChange={(e) => setMatchPws(e.target.value)}
                 className=" p-1.5 rounded-xl CustomShadow border border-green-600 outline-none bg-white"
             />
@@ -166,9 +221,7 @@ const handelSubmit = (e: React.FormEvent) => {
             <p>
                 Already have an account?{" "}
                 <span className="text-secondary cursor-pointer">
-                
                     Log in here
-                
                 </span>
             </p>
         </form>
