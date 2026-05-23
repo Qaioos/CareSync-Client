@@ -1,32 +1,31 @@
 //React icons
 import { GiCancel } from "react-icons/gi";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "../../Config/axios";
 import useAuth from "../../Hook/authUser/useAuth";
-import type{ AuthResponse } from "../../Types/api.responses";
+import type { AuthResponse } from "../../Types/api.responses";
 import type { StrapiUser } from "../../Types/api.responses";
 import { ImSpinner2 } from "react-icons/im";
 import Loading from "../Ui/LodaingSign";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const BAES_URL = "/auth/local";
 
-
 const FormLog = () => {
-    const { setAuth ,signUp } = useAuth();
+    const { setAuth } = useAuth();
+
+    const navigate = useNavigate();
+
 
     const nameRef = useRef<HTMLInputElement | null>(null);
     const errRef = useRef<HTMLParagraphElement>(null);
 
-    const [isLodaing, setisLodaing] = useState<boolean>(false)
+    const [isLodaing, setisLodaing] = useState<boolean>(false);
 
     const [username, setUserName] = useState<string>("");
     const [pws, setpws] = useState<string>("");
 
-
     const [errMsg, setErrMsg] = useState<string>("aasds");
     const [iserr, setIsErr] = useState<boolean>(true);
-
-
 
     useEffect(() => {
         nameRef.current.focus();
@@ -38,10 +37,9 @@ const FormLog = () => {
 
     const handelSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-            setisLodaing(true)
+        setisLodaing(true);
 
         try {
-            
             const response = await axios.post<AuthResponse>(
                 BAES_URL,
                 JSON.stringify({
@@ -55,28 +53,32 @@ const FormLog = () => {
 
             const accrssToken = response?.data?.jwt;
 
-            const User :StrapiUser = response?.data?.user
+            const User: StrapiUser = response?.data?.user;
 
             const userResponse = await axios.get("/users/me?populate=role", {
                 headers: {
-                    Authorization: `Bearer ${accrssToken}`, 
-                    
+                    Authorization: `Bearer ${accrssToken}`,
                 },
             });
 
 
-            
-            console.log(userResponse);
-            console.log(userResponse.data?.role?.name);
-            const  rols :string = userResponse?.data?.role?.name
+            const rols: string = userResponse?.data?.role?.name;
 
-            setAuth({User, username, rols ,accrssToken });
-            signUp(User,accrssToken)
+            setAuth({ User, username, rols, accrssToken });
             setUserName("");
             setpws("");
 
+
+            if (rols === "Admin") {
+                navigate("/admin", { replace: true });
+            } else if (rols === "Authenticated") {
+                navigate("/nuse", { replace: true });
+            } else {
+                navigate("/", { replace: true }); 
+            }
+
         } catch (err) {
-            setIsErr(true)
+            setIsErr(true);
             if (!err?.response) {
                 setErrMsg("No Server Response");
             } else if (err.response?.status === 409) {
@@ -84,12 +86,10 @@ const FormLog = () => {
             } else {
                 setErrMsg("Registration Failed");
             }
-        }finally{
-            setisLodaing(false)
+        } finally {
+            setisLodaing(false);
         }
-    }
-
-    
+    };
 
     return (
         <form
@@ -130,21 +130,33 @@ const FormLog = () => {
                 onChange={(e) => setpws(e.target.value)}
                 className=" p-1.5 rounded-xl CustomShadow border border-green-600 outline-none bg-white"
             />
-            <button
-                className="w-ful  transition primary-btn  rounded-lg p-2  cursor-pointer my-5"
-            >
+            <div className="flex  justify-end  items-center flex-row-reverse">
+
+            </div>
+
+            <button className="w-ful  transition primary-btn  rounded-lg p-2  cursor-pointer my-5">
                 {" "}
-            {!isLodaing ? <p> Log in </p> : <p><ImSpinner2/></p>}
+                {!isLodaing ? (
+                    <p> Log in </p>
+                ) : (
+                    <p>
+                        <ImSpinner2 />
+                    </p>
+                )}
             </button>
             <p>
                 Don't have an account?{" "}
                 <span className="text-secondary cursor-pointer">
-                    <Link to={"/sign-up"} > Sign Up </Link>
+                    <Link to={"/sign-up"}> Sign Up </Link>
                 </span>
             </p>
-            {isLodaing ? <Loading  fullPage={true} message="Waiting for Loading..." /> : ""}
+            {isLodaing ? (
+                <Loading fullPage={true} message="Waiting for Loading..." />
+            ) : (
+                ""
+            )}
         </form>
     );
-}
+};
 
 export default FormLog;

@@ -6,7 +6,7 @@ import axios from "../../Config/axios";
 import useAuth from "../../Hook/authUser/useAuth";
 import type { AuthResponse } from "../../Types/api.responses";
 import type { StrapiUser } from "../../Types/api.responses";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loading from "../Ui/LodaingSign";
 
 const BAES_URL = "/auth/local/register";
@@ -17,8 +17,8 @@ const PWS_RGX =
 const EMAIL_RGX = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,20}$/;
 
 const Form = () => {
-    const { setAuth, signUp } = useAuth();
-
+    const { setAuth } = useAuth();
+    const navigate = useNavigate()
     const [isLodaing, setisLodaing] = useState(false);
 
     const nameRef = useRef<HTMLInputElement | null>(null);
@@ -63,7 +63,7 @@ const Form = () => {
         }
 
         try {
-            const response = await axios.post<AuthResponse>(
+            const response = await axios.post(
                 BAES_URL,
                 JSON.stringify({
                     username: username,
@@ -79,15 +79,32 @@ const Form = () => {
 
             const User: StrapiUser = response?.data?.user;
 
+            const userResponse = await axios.get("/users/me?populate=role", {
+                headers: {
+                    Authorization: `Bearer ${accrssToken}`, 
+                    
+                },
+            });
+
+            const rols = userResponse?.data?.role?.name
             console.log(response.data);
             console.log(accrssToken);
 
-            setAuth({ User, username, accrssToken });
-            signUp(User, accrssToken);
+            setAuth({ User, username, accrssToken ,rols});
+            
+            
             setemail("");
             setUserName("");
             setpws("");
             setMatchPws("");
+            
+            if (rols === "Admin") {
+                navigate("/admin", { replace: true });
+            } else if (rols === "Authenticated") {
+                navigate("/nuse", { replace: true });
+            } else {
+                navigate("/", { replace: true }); 
+            }
         } catch (err) {
             setIsErr(true);
             if (!err?.response) {
