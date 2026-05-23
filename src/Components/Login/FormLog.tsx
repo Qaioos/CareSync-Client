@@ -8,6 +8,7 @@ import type { StrapiUser } from "../../Types/api.responses";
 import { ImSpinner2 } from "react-icons/im";
 import Loading from "../Ui/LodaingSign";
 import { Link, useNavigate } from "react-router-dom";
+import type { AxiosError } from "axios";
 const BAES_URL = "/auth/local";
 
 const FormLog = () => {
@@ -28,7 +29,7 @@ const FormLog = () => {
     const [iserr, setIsErr] = useState<boolean>(true);
 
     useEffect(() => {
-        nameRef.current.focus();
+        nameRef.current?.focus();
     }, []);
 
     useEffect(() => {
@@ -53,7 +54,7 @@ const FormLog = () => {
 
             const accrssToken = response?.data?.jwt;
 
-            const User: StrapiUser = response?.data?.user;
+            const user: StrapiUser = response?.data?.user;
 
             const userResponse = await axios.get("/users/me?populate=role", {
                 headers: {
@@ -64,7 +65,7 @@ const FormLog = () => {
 
             const rols: string = userResponse?.data?.role?.name;
 
-            setAuth({ User, username, rols, accrssToken });
+            setAuth({ user, username, rols, accrssToken });
             setUserName("");
             setpws("");
 
@@ -77,7 +78,8 @@ const FormLog = () => {
                 navigate("/", { replace: true }); 
             }
 
-        } catch (err) {
+        } catch (error ) {
+            const err = error as AxiosError
             setIsErr(true);
             if (!err?.response) {
                 setErrMsg("No Server Response");

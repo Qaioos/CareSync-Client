@@ -4,10 +4,10 @@ import { GiCancel } from "react-icons/gi";
 import { useState, useEffect, useRef } from "react";
 import axios from "../../Config/axios";
 import useAuth from "../../Hook/authUser/useAuth";
-import type { AuthResponse } from "../../Types/api.responses";
 import type { StrapiUser } from "../../Types/api.responses";
 import { Link, useNavigate } from "react-router-dom";
 import Loading from "../Ui/LodaingSign";
+import type { AxiosError } from "axios";
 
 const BAES_URL = "/auth/local/register";
 
@@ -45,7 +45,7 @@ const Form = () => {
     const isFormValid = isValidName && isValidPws && isValidEmail;
 
     useEffect(() => {
-        nameRef.current.focus();
+        nameRef.current?.focus();
     }, []);
 
     useEffect(() => {
@@ -77,7 +77,7 @@ const Form = () => {
 
             const accrssToken = response?.data?.jwt;
 
-            const User: StrapiUser = response?.data?.user;
+            const user: StrapiUser = response?.data?.user;
 
             const userResponse = await axios.get("/users/me?populate=role", {
                 headers: {
@@ -90,7 +90,7 @@ const Form = () => {
             console.log(response.data);
             console.log(accrssToken);
 
-            setAuth({ User, username, accrssToken ,rols});
+            setAuth({ user, username, accrssToken ,rols});
             
             
             setemail("");
@@ -105,7 +105,8 @@ const Form = () => {
             } else {
                 navigate("/", { replace: true }); 
             }
-        } catch (err) {
+        } catch (error) {
+            const err = error as AxiosError
             setIsErr(true);
             if (!err?.response) {
                 setErrMsg("No Server Response");
