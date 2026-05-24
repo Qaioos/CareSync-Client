@@ -1,3 +1,4 @@
+import type { NurseCoverage } from "../../../Types/api.responses";
 import {
     AreaChart,
     Area,
@@ -6,20 +7,49 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
+    TooltipProps, // 1. تم إضافة الاستيراد المفقود هنا
 } from "recharts";
 import { RechartsDevtools } from "@recharts/devtools";
 
-// مكون مخصص لتعديل شكل الـ Tooltip ليظهر البيانات بشكل احترافي ومتناسق مع مشروعك
-const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-        const nurses = payload[0].value;
-        const patients = payload[1].value;
+// 2. تصحيح هيكل الواجهة وجعلها متوافقة مع الـ Tooltip
+export interface CustomTooltipProps extends Omit<TooltipProps<number, string>, 'payload'> {
+  active?: boolean;
+  label?: string;
+  payload?: Array<{
+    color?: string;
+    dataKey?: string | number;
+    fill?: string;
+    graphicalItemId?: string | number;
+    hide?: boolean;
+    name?: string;
+    nameKey?: string | number;
+    payload: any; 
+    stroke?: string;
+    strokeWidth?: number;
+    type?: undefined;
+    unit?: string;
+    value?: number;
+  }>;
+}
+
+// 3. ربط المكون بالواجهة الصحيحة (CustomTooltipProps)
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+    // التحقق الآمن من وجود المصفوفة وبها عناصر لتجنب أخطاء وقت التشغيل
+    if (active && payload && payload.length >= 2) {
+        // قراءة آمنة للقيم الرقمية مع وضع 0 كقيمة احتياطية
+        const nurses = payload[0]?.value ?? 0;
+        const patients = payload[1]?.value ?? 0;
+
+        console.log(payload);
+        console.log(active);
+        console.log(label);
+
         // حساب نسبة التغطية المئوية الفورية لهذه النقطة الزمنية
         const coverage =
             patients > 0 ? Math.round((nurses / (patients / 2)) * 100) : 100;
 
         return (
-            <div className="bg-white p-1 rounded-xl  border border-solid border-surface-container-high">
+            <div className="bg-white p-1 rounded-xl border border-solid border-surface-container-high">
                 <p className="font-label-md text-label-md text-on-surface-variant mb-2">
                     {label}
                 </p>
@@ -42,8 +72,8 @@ const CustomTooltip = ({ active, payload, label }) => {
     return null;
 };
 
-// المكون الآن يستقبل مصفوفة البيانات القادمة من الـ API كـ Prop
-const Nurse_Coverage = ({ apiData }) => {
+// 4. تصحيح نوع الـ Props لـ apiData ليكون مصفوفة من الأنواع وليس كائناً مفرداً
+const Nurse_Coverage = ({ apiData }: { apiData?: NurseCoverage[] }) => {
     // بيانات افتراضية ممتازة تحاكي الـ API في حال لم يتم تمرير الـ apiData بعد
     const defaultData = [
         { time: "08:00 AM", nurses: 5, patients: 10 },
@@ -57,25 +87,25 @@ const Nurse_Coverage = ({ apiData }) => {
     const chartData = apiData || defaultData;
 
     return (
-        <div className="bg-white rounded-xl card-shadow  flex flex-col justify-between hover:ambient-glow transition-shadow duration-300">
+        <div className="bg-white rounded-xl card-shadow flex flex-col justify-between hover:ambient-glow transition-shadow duration-300">
             {/* رأس الكارت الخاص بالعناوين */}
             <div className="mb-4">
                 <h3 className="material-symbols-outlined text-headline-sm text-on-surface mb-1">
                     Nurse Coverage vs Demand
                 </h3>
                 <p className="font-body-sm text-body-sm text-on-surface-variant">
-                      Rolling 24-hour predictive model
+                    Rolling 24-hour predictive model
                 </p>
                 <div className="flex items-center justify-end gap-4">
                     <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-[#14B8A6]"></div>
-                        <span className="material-symbols-outlined  text-label-sm text-on-surface-variant">
+                        <span className="material-symbols-outlined text-label-sm text-on-surface-variant">
                             Coverage
                         </span>
                     </div>
                     <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-[#10B981]"></div>
-                        <span className="material-symbols-outlined  text-label-sm text-on-surface-variant">
+                        <span className="material-symbols-outlined text-label-sm text-on-surface-variant">
                             Demand
                         </span>
                     </div>
@@ -90,7 +120,7 @@ const Nurse_Coverage = ({ apiData }) => {
                         margin={{
                             top: 10,
                             right: 0,
-                            left: -40, // تحسين الهامش الأيسر لعدم اختفاء أرقام محور Y
+                            left: -40, 
                             bottom: 0,
                         }}
                     >
@@ -124,7 +154,7 @@ const Nurse_Coverage = ({ apiData }) => {
                         {/* الـ Tooltip المطور المخصص لمشروعك */}
                         <Tooltip content={<CustomTooltip />} />
 
-                        {/* المساحة الأولى: عدد الممرضات (باللون الأساسي للمشروع) */}
+                        {/* المساحة الأولى: عدد الممرضات */}
                         <Area
                             type="monotone"
                             dataKey="nurses"
@@ -134,7 +164,7 @@ const Nurse_Coverage = ({ apiData }) => {
                             strokeWidth={2}
                         />
 
-                        {/* المساحة الثانية: عدد المرضى (باللون الثانوي للمشروع) */}
+                        {/* المساحة الثانية: عدد المرضى */}
                         <Area
                             type="monotone"
                             dataKey="patients"
