@@ -1,9 +1,11 @@
+import Layout from "../Components/Admin/Layout"
+import Main from "../Components/Admin/Main"
 
 const Admin = () => {
   return (
     <div>
-      Hi 
-      this page for Admin 
+      <Layout/>
+      <Main/>
     </div>
   )
 }

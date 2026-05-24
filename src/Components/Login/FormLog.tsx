@@ -146,6 +146,11 @@ const FormLog = () => {
                     </p>
                 )}
             </button>
+            <div className="card-shadow p-2 text-primary">
+                <p>Admin </p>
+                <p>Email : admin@demo.com</p>
+                Paswrrd : Password123
+            </div>
             <p>
                 Don't have an account?{" "}
                 <span className="text-secondary cursor-pointer">
