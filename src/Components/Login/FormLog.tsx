@@ -1,7 +1,7 @@
 //React icons
 import { GiCancel } from "react-icons/gi";
-import React, { useState, useEffect, useRef } from "react";
-import axios from "../../Config/axios";
+import { useState, useEffect, useRef } from "react";
+import { axiosInstance } from "../../Config/axios";
 import useAuth from "../../Hook/authUser/useAuth";
 import type { AuthResponse } from "../../Types/api.responses";
 import type { StrapiUser } from "../../Types/api.responses";
@@ -9,13 +9,14 @@ import { ImSpinner2 } from "react-icons/im";
 import Loading from "../Ui/LodaingSign";
 import { Link, useNavigate } from "react-router-dom";
 import type { AxiosError } from "axios";
+import { useAxiosPrivate } from "../../Hook/RequestsWithToken/useAxiosPrivet";
 const BAES_URL = "/auth/local";
 
 const FormLog = () => {
+    const axiosPrivate = useAxiosPrivate();
     const { setAuth } = useAuth();
 
     const navigate = useNavigate();
-
 
     const nameRef = useRef<HTMLInputElement | null>(null);
     const errRef = useRef<HTMLParagraphElement>(null);
@@ -41,27 +42,26 @@ const FormLog = () => {
         setisLodaing(true);
 
         try {
-            const response = await axios.post<AuthResponse>(
+            const response = await axiosInstance.post<AuthResponse>(
                 BAES_URL,
                 JSON.stringify({
                     identifier: username,
                     password: pws,
                 }),
-                {
-                    headers: { "Content-Type": "application/json" },
-                },
             );
 
             const accrssToken = response?.data?.jwt;
 
             const user: StrapiUser = response?.data?.user;
 
-            const userResponse = await axios.get("/users/me?populate=role", {
+            const userResponse = await axiosPrivate.get(
+                // just here we used headers becuse the context auth not refresh yet
+                "/users/me?populate=role" , {
                 headers: {
                     Authorization: `Bearer ${accrssToken}`,
                 },
-            });
-
+            },
+            );
 
             const rols: string = userResponse?.data?.role?.name;
 
@@ -69,17 +69,16 @@ const FormLog = () => {
             setUserName("");
             setpws("");
 
-
             if (rols === "Admin") {
                 navigate("/admin", { replace: true });
             } else if (rols === "Authenticated") {
                 navigate("/nuse", { replace: true });
             } else {
-                navigate("/", { replace: true }); 
+                navigate("/", { replace: true });
             }
-
-        } catch (error ) {
-            const err = error as AxiosError
+            
+        } catch (error) {
+            const err = error as AxiosError;
             setIsErr(true);
             if (!err?.response) {
                 setErrMsg("No Server Response");
@@ -132,9 +131,7 @@ const FormLog = () => {
                 onChange={(e) => setpws(e.target.value)}
                 className=" p-1.5 rounded-xl CustomShadow border border-green-600 outline-none bg-white"
             />
-            <div className="flex  justify-end  items-center flex-row-reverse">
-
-            </div>
+            <div className="flex  justify-end  items-center flex-row-reverse"></div>
 
             <button className="w-ful  transition primary-btn  rounded-lg p-2  cursor-pointer my-5">
                 {" "}

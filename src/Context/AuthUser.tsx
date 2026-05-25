@@ -6,7 +6,7 @@ interface AuthContextType {
         user: StrapiUser | null;
         username: string | null;
         accrssToken: string | null;
-
+        
         rols:string | null
     };
     setAuth: React.Dispatch<
@@ -29,12 +29,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user: StrapiUser | null;
         username: string | null;
         accrssToken: string | null;
-        rols:string | null
+        
+        rols:string | null;
     }>({
         user: null,
         username: null,
         accrssToken: null,
-        rols:  null
+        rols:  null,
     });
 
 

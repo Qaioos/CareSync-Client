@@ -40,3 +40,15 @@ export interface NurseCoverage {
     nurses?: number;
     patients?: number;
 }
+
+export interface Requests {
+Details: string 
+RequestType: string
+Room_Number: number
+Situation: string
+createdAt: string
+documentId:string
+id:number
+publishedAt:string
+updatedAt: string
+} 

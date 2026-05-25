@@ -2,7 +2,7 @@
 import { IoMdCheckmarkCircle } from "react-icons/io";
 import { GiCancel } from "react-icons/gi";
 import { useState, useEffect, useRef } from "react";
-import axios from "../../Config/axios";
+import {axiosInstance} from "../../Config/axios";
 import useAuth from "../../Hook/authUser/useAuth";
 import type { StrapiUser } from "../../Types/api.responses";
 import { Link, useNavigate } from "react-router-dom";
@@ -63,7 +63,7 @@ const Form = () => {
         }
 
         try {
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 BAES_URL,
                 JSON.stringify({
                     username: username,
@@ -79,7 +79,7 @@ const Form = () => {
 
             const user: StrapiUser = response?.data?.user;
 
-            const userResponse = await axios.get("/users/me?populate=role", {
+            const userResponse = await axiosInstance.get("/users/me?populate=role", {
                 headers: {
                     Authorization: `Bearer ${accrssToken}`, 
                     
