@@ -6,8 +6,7 @@ import ProtectedRoute from "./Routes/ProtectedRoute";
 import Nuse from "./Pages/Nuse";
 import Admin from "./Pages/Admin";
 import useAuth from "./Hook/authUser/useAuth";
-import Nurse_Coverage from "./Components/Admin/UI/Nurse_Coverage";
-import Loading from "./Components/Ui/LodaingSign";
+
 
 function App() {
     const { auth } = useAuth();
