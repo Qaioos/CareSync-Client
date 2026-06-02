@@ -25,7 +25,7 @@ export const useAxiosPrivate = () => {
         const responseIntercept = axiosInstance.interceptors.response.use(
             (response) => response,
             (error) => {
-                if (error?.response && error?.response.status === 401) {
+                if (error?.response && error?.response.status === 403) {
                     console.log('Navigating the user to login');
                     navigate('/login', { state: { from: location }, replace: true });
                 }

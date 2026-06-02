@@ -26,7 +26,7 @@ export const useFetchAlerts = () => {
                 
                 
                 if (isMounted) {
-                    // Strapi يضع المصفوفة عادة داخل response.data.data
+                    // response.data.data
                     const cleanData = response?.data?.data || response?.data;
                     setRequests(cleanData || []);
                     setisLodaing(false);
@@ -41,7 +41,6 @@ export const useFetchAlerts = () => {
             } finally {
                 if (isMounted) {
                     setisLodaing(false);
-                    console.log("🏁 تم إيقاف حالة التحميل في الـ Hook");
                 }
             }
         };
@@ -50,15 +49,15 @@ export const useFetchAlerts = () => {
 
         const interval :number = setInterval(() => {
         getRequests();
-    }, 3000);
+    }, 1000);
 
         return () => {
             isMounted = false;
             controller.abort();
             clearInterval(interval)
         };
-    }, [auth?.accrssToken,axiosPrivate]); // يعمل عند توفر التوكن أو تغيره
+    }, [auth?.accrssToken,axiosPrivate]); //it works when the token iis avilabel or changes 
 
-    // نُصدر الحالات والمصفوفة فقط لملف الـ UI
+    
     return { request, isLodaing, err };
 };

@@ -42,13 +42,37 @@ export interface NurseCoverage {
 }
 
 export interface Requests {
-Details: string 
-RequestType: string
-Room_Number: number
-Situation: string
-createdAt: string
-documentId:string
-id:number
-publishedAt:string
-updatedAt: string
-} 
+    Details: string;
+    RequestType: string;
+    Room_Number: number;
+    Situation: string;
+    createdAt: string;
+    documentId: string;
+    id: number;
+    publishedAt: string;
+    updatedAt: string;
+}
+
+export interface Department {
+    ActiveBeds: number;
+    Situation: string;
+    TotalBeds: number;
+    createdAt: string;
+    documentId: string;
+    id: number;
+    publishedAt: string;
+    updatedAt: string;
+    WaitingCount?: number;
+}
+
+export interface Requests {
+    departmenticu: {
+        data: [Department];
+    };
+    departmentmAG_Sug: {
+        data: [Department];
+    };
+    departmenticu_Emrg: {
+        data: [Department];
+    };
+}
