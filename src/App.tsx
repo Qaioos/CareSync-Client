@@ -7,6 +7,7 @@ import Nuse from "./Pages/Nuse";
 import Admin from "./Pages/Admin";
 import useAuth from "./Hook/authUser/useAuth";
 
+import { Toaster } from 'react-hot-toast';
 
 function App() {
     const { auth } = useAuth();
@@ -21,6 +22,7 @@ function App() {
 
     return (
         <>
+        <Toaster position="top-center" reverseOrder={false} />
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={defaultRedirect} />

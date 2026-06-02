@@ -1,21 +1,85 @@
 //React Icons
+import { GiCancel } from "react-icons/gi";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { MdPersonAddAlt1 } from "react-icons/md";
 import { LiaSyncAltSolid } from "react-icons/lia";
 import { IoWarning } from "react-icons/io5";
 import { useFetchAlerts } from "../../../Features/requests/AdminRequests";
+import { useAxiosPrivate } from "../../../Hook/RequestsWithToken/useAxiosPrivet";
+import toast from "react-hot-toast";
+import BtmToTop from "../../Ui/motion/BtmToTop";
+import { useEffect, useRef } from "react";
 
 const Emrgrncy_Alerts = () => {
+    const axiosPrivate = useAxiosPrivate();
+
     const { request, isLodaing, err } = useFetchAlerts();
-   // 1. حالة التحميل
+
+    const previousLength = useRef<number | null>(null);
+
+    useEffect(() => {
+        if (!isLodaing && request) {
+            if (previousLength.current === null) {
+                previousLength.current = request.length;
+                return;
+            }
+
+            if (request.length > previousLength.current) {
+                const newRequest = request[request.length - 1];
+
+                const audio = new Audio(
+                    "/public/Sounds/AlertAdmin/RequestForAdmin.mp3",
+                );
+                audio.play().catch((error) => {
+                    console.log(
+                        "Audio playback failed. Browser requires user interaction first:",
+                        error,
+                    );
+                });
+                toast(
+                    (t) => (
+                        <div className="flex flex-col gap-1 p-1">
+                            <span className="font-bold text-error flex items-center gap-1">
+                                ⚠️ New Alert: {newRequest?.Situation}
+                            </span>
+                            <p className="text-sm">
+                                Room {newRequest?.Room_Number} -{" "}
+                                {newRequest?.RequestType}
+                            </p>
+                            <button
+                                onClick={() => toast.dismiss(t.id)}
+                                className="mt-2 text-xs bg-gray-200 hover:bg-gray-300 py-1 px-2 rounded self-end font-medium"
+                            >
+                                Dismiss
+                            </button>
+                        </div>
+                    ),
+                    { duration: 4000 },
+                );
+            }
+            previousLength.current = request.length;
+        }
+    }, [request, isLodaing]);
+
     if (isLodaing) {
-        return <div className="loading">جاري تحميل الطلبات...</div>;
+        return <div className="loading"> Lodaing Data...</div>;
     }
 
-    // 2. حالة حدوث خطأ
     if (err) {
         return <div className="error-message">{err}</div>;
     }
+
+    const handelCancel = async (id: string) => {
+        try {
+            const respone = await axiosPrivate.delete(`/requests/${id}`);
+            console.log(respone);
+
+            return toast.success("Successfully Deleted!");
+        } catch (error) {
+            console.error("Failed to cancel request:", error);
+            return toast.error("Failed to cancel request. Please try again.");
+        }
+    };
 
     return (
         <div className="md:col-span-4  bg-white rounded-xl card-shadow p-6 flex flex-col gap-6 row-span-2">
@@ -28,37 +92,60 @@ const Emrgrncy_Alerts = () => {
                 </h3>
 
                 <div className="space-y-3 overflow-y-scroll h-40">
-                    {request.map((Request, id) => {
-                        const getAlertStyle = (situation: string) => {
-                            switch (situation) {
-                                case "Warning":
-                                    return "bg-error-container/50 border-error-container text-on-error-container";
-                                case "Routine":
-                                    return " bg-brand-primary border-[#FDE68A] text-white";
-                                default:
-                                    return "bg-green-100 border-green-300 text-green-800"; // للحالات العادية أو المنجزة
-                            }
-                        };
-                        return (
-                            <div
-                                key={id}
-                                className={`${getAlertStyle(Request?.Situation)} border border-error-container p-3 rounded-lg flex gap-3 items-start`}
-                            >
-                                <span className="material-symbols-outlined    ">
-                                    {Request?.Situation}
-                                </span>
-                                <div>
-                                    <p className="material-symbols-outlined   text-label-md ">
-                                        {Request?.RequestType}-
-                                        {Request?.Room_Number}
-                                    </p>
-                                    <p className="material-symbols-outlined   text-label-sm ">
-                                        {Request?.Details}
-                                    </p>
-                                </div>
-                            </div>
-                        );
-                    })}
+                    {request.length > 0 ? (
+                        request.map((Request) => {
+                            const getAlertStyle = (situation: string) => {
+                                switch (situation) {
+                                    case "Critical":
+                                        return "bg-error-container/50 border-error-container text-on-error-container";
+                                    case "Warning":
+                                        return " bg-[#FEF3C7] border-[#FDE68A] text-[#B45309] ";
+                                    case "Routine":
+                                        return "bg-green-100 border-green-300 text-green-800";
+                                    default:
+                                        return "bg-green-100 border-green-300 text-green-800";
+                                }
+                            };
+                            return (
+                                <BtmToTop key={Request.documentId}>
+                                    <div
+                                        className={`${getAlertStyle(Request?.Situation)} border border-error-container p-3 rounded-lg flex gap-3 items-start`}
+                                    >
+                                        <span className="material-symbols-outlined flex items-center text-[15px] ">
+                                            <GiCancel
+                                                onClick={() =>
+                                                    handelCancel(
+                                                        Request.documentId,
+                                                    )
+                                                }
+                                                className="mr-2 cursor-pointer "
+                                            />{" "}
+                                            {Request?.Situation}
+                                        </span>
+                                        <div>
+                                            <p className="material-symbols-outlined   text-label-md ">
+                                                {Request?.RequestType}-
+                                                {Request?.Room_Number}
+                                            </p>
+                                            <p className="material-symbols-outlined   text-label-sm ">
+                                                {Request?.Details}
+                                            </p>
+                                            <p className="material-symbols-outlined   text-label-sm ">
+                                                {Request?.publishedAt.slice(
+                                                    11,
+                                                    16,
+                                                )}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </BtmToTop>
+                            );
+                        })
+                    ) : (
+                        <p className="text-center text-on-surface-variant">
+                            No Alerts at the moment.
+                        </p>
+                    )}
                     {/*                     <div className="bg-error-container/50 border border-error-container p-3 rounded-lg flex gap-3 items-start">
                         <span className="material-symbols-outlined   text-error mt-0.5 text-[20px]">
                             priority_high
