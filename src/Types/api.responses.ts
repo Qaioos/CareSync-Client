@@ -76,3 +76,14 @@ export interface Requests {
         data: [Department];
     };
 }
+
+export interface Task{
+Description: string
+DueTime: string
+IsCompleted: boolean
+PatientName: string
+Priority: string
+Room:string
+Title:string
+Worker: string
+}
