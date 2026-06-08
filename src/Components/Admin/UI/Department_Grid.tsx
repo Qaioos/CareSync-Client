@@ -57,7 +57,7 @@ and remove the hard coded data in the return statement
         );
     }
 
-    const { departmenticu, departmentmAG_Sug, departmenticu_Emrg } =
+    const { departmenticu   , departmentmAG_Sug, departmenticu_Emrg } =
         request as Requests;
 
     console.log(departmenticu_Emrg);

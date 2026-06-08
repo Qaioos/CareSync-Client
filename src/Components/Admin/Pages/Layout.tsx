@@ -1,5 +1,5 @@
-import Header from "./Header";
-import Navigation from "./Navigation";
+import Header from "../Pages/Header";
+import Navigation from "../Pages/Navigation";
 
 const Layout = () => {
     return (
