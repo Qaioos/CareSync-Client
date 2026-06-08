@@ -1,13 +1,13 @@
-import Layout from "../Components/Admin/Layout"
-import Main from "../Components/Admin/Main"
+import Layout from "../Components/Admin/Pages/Layout";
+import Main from "../Components/Admin/Pages/Main";
 
 const Admin = () => {
-  return (
-    <div>
-      <Layout/>
-      <Main/>
-    </div>
-  )
-}
+    return (
+        <div>
+            <Layout />
+            <Main />
+        </div>
+    );
+};
 
-export default Admin
+export default Admin;
