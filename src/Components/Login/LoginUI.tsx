@@ -3,7 +3,7 @@ import FormLogin from "./FormLogin"
 
 const LoginUI = () => {
   return (
-    <section className="flex h-[100vh] h-full w-full ">
+    <section className="flex items-stretch  h-[100vh]">
     <ArticalLog/>
     <FormLogin/>
     </section>

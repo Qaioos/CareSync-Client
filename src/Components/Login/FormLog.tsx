@@ -110,7 +110,7 @@ const FormLog = () => {
                 htmlFor="name"
                 className="mb-2 text-gray-700 mt-4 flex items-center"
             >
-                UserName Or Email
+                Username Or Email
             </label>
             <input
                 type="text"
@@ -123,7 +123,7 @@ const FormLog = () => {
                 htmlFor="password"
                 className="mb-2 text-gray-700 mt-4 flex items-center"
             >
-                PassWord:
+                Password:
             </label>
             <input
                 type="password"
@@ -148,7 +148,7 @@ const FormLog = () => {
                 <p>Email : admin@demo.com</p>
                 Paswrrd : Password123
             </div>
-            <p>
+            <p className="pt-4">
                 Don't have an account?{" "}
                 <span className="text-secondary cursor-pointer">
                     <Link to={"/sign-up"}> Sign Up </Link>

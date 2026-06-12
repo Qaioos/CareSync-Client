@@ -26,20 +26,20 @@ export default function BtnExport() {
             {
                 name: "ICU",
                 ratio: "1:2",
-                occupancy: `${departmenticu?.data?.[0].ActiveBeds} : ${departmenticu?.data?.[0].TotalBeds}`,
-                status: `${departmenticu?.data?.[0].Situation}`,
+                occupancy: `${departmenticu?.data?.[0]?.ActiveBeds} : ${departmenticu?.data?.[0]?.TotalBeds}`,
+                status: `${departmenticu?.data?.[0]?.Situation}`,
             },
             {
                 name: "Emergency",
                 ratio: "1:4",
-                occupancy: `${departmenticu_Emrg.data?.[0].WaitingCount} WaitingCount`,
+                occupancy: `${departmenticu_Emrg.data?.[0]?.WaitingCount} WaitingCount`,
                 status: `${departmenticu_Emrg?.data?.[0]?.Situation}`,
             },
             {
                 name: "Med/Surg",
                 ratio: "1:5",
-                occupancy: `${departmentmAG_Sug?.data?.[0].ActiveBeds} : ${departmentmAG_Sug?.data?.[0].TotalBeds}`,
-                status: `${departmentmAG_Sug?.data?.[0].Situation}`,
+                occupancy: `${departmentmAG_Sug?.data?.[0]?.ActiveBeds} : ${departmentmAG_Sug?.data?.[0]?.TotalBeds}`,
+                status: `${departmentmAG_Sug?.data?.[0]?.Situation}`,
             },
         ],
         alerts: Array.isArray(alertsArray) ? alertsArray : [],
@@ -51,13 +51,12 @@ export default function BtnExport() {
     });
 
     return (
-            <button
+        <button
             onClick={handlePrint}
-                className=" px-4 py-2 cursor-pointer border-[1.5px] border-primary text-primary material-symbols-outlined  text-label-lg rounded-lg hover:bg-primary/5 transition-colors"
-            >
-                Export Report
+            className=" px-4 py-2 cursor-pointer border-[1.5px] border-primary text-primary material-symbols-outlined  text-label-lg rounded-lg hover:bg-primary/5 transition-colors"
+        >
+            Export Report
             <MedicalReport ref={reportRef} data={reportData} />
-            </button>
-
+        </button>
     );
 }
