@@ -1,7 +1,7 @@
 const DNA ="https://lh3.googleusercontent.com/aida-public/AB6AXuBZF8H6An0IQQB6HoKH25x3iZ3aTUFM5HmEn8ykujbmbNakP1sSmL-dzbv_cH5Uj2r7n_hZPkMjz39odaKYiEydqYqXG-dJmUQ8Jl3Yu5UYFPKQogpFcBCThMFRs5s-zEIgbx8QhgVIJpB0yBeBcnumZah2R_MihZjE9UddDQnGpfQ2bIwdKEaTYZOvNQFKLuc7ked0UkXt1OXrIfJ2w7cdn0fW_xMjjNKuXMfyNj4X7TOAaKm0X2ctLMtm33Ly1aqgN8lOVV6VuFuc?url"
 const ArticalLog = () => {
     return (
-            <div className="hidden bg-primary lg:flex w-full medical-gradient flex-col  h-[100vh] justify-between p-12 relative overflow-hidden">
+            <div className="hidden bg-primary lg:flex w-full medical-gradient flex-col justify-between p-12 relative overflow-hidden">
                 <div
                     className="backIMG absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none"
                 ></div>

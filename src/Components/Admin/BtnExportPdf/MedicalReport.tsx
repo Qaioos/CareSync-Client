@@ -36,7 +36,7 @@ const MedicalReport = React.forwardRef<HTMLDivElement, MedicalReportProps>(
                 <div className="flex justify-between items-center pb-6 border-b-2 border-blue-600 mb-8">
                     <div>
                         <h1 className="text-2xl font-bold text-blue-800 flex items-center gap-2">
-                            🏥 CareSync Medical System
+                            CareSync Medical System
                         </h1>
                         <p className="text-sm text-gray-500 mt-1">
                             Comprehensive Administrative & Operational Report
@@ -56,7 +56,7 @@ const MedicalReport = React.forwardRef<HTMLDivElement, MedicalReportProps>(
                 {/* Section 1: Overview (Digital Summary) */}
                 <div className="mb-8">
                     <h3 className="text-lg font-bold text-gray-700 border-b border-gray-200 pb-2 mb-4">
-                        📊 Operational Summary Metrics
+                        Operational Summary Metrics
                     </h3>
                     <div className="grid grid-cols-3 gap-4">
                         <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 text-center">
@@ -89,7 +89,7 @@ const MedicalReport = React.forwardRef<HTMLDivElement, MedicalReportProps>(
                 {/* Section 2: Department Metrics (ICU / Emergency / Med-Surg) */}
                 <div className="mb-8 print:break-inside-avoid">
                     <h3 className="text-lg font-bold text-gray-700 border-b border-gray-200 pb-2 mb-4">
-                        🏢 Current Medical Department Status
+                        Current Medical Department Status
                     </h3>
                     <table className="w-full text-left border-collapse border border-gray-300">
                         <thead>
@@ -138,7 +138,7 @@ const MedicalReport = React.forwardRef<HTMLDivElement, MedicalReportProps>(
                 {/* Section 3: Alerts and Feed */}
                 <div className="mb-8 print:break-inside-avoid">
                     <h3 className="text-lg font-bold text-gray-700 border-b border-gray-200 pb-2 mb-4">
-                        ⚠️ Live Urgent Notifications & Requests
+                        Live Urgent Notifications & Requests
                     </h3>
                     <div className="space-y-3">
                         {data.alerts.map((alert, index) => {

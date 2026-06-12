@@ -49,9 +49,11 @@ const Main = () => {
                         <BtnExport/>
                     
 
-                    <button className="cursor-pointer px-4 py-2 bg-linear-to-b from-[#14B8A6] to-[#0F766E] text-white material-symbols-outlined  text-label-lg rounded-lg hover:opacity-90 transition-opacity shadow-sm flex items-center gap-2">
+                    {/* <button className="cursor-pointer px-4 py-2 bg-linear-to-b from-[#14B8A6] to-[#0F766E] text-white material-symbols-outlined  text-label-lg rounded-lg hover:opacity-90 transition-opacity shadow-sm flex items-center gap-2">
                         Manage Shifts
-                    </button>
+                    </button> */}
+
+                    
                     <button
                         onClick={() => setisOpen(true)}
                         className="cursor-pointer px-4 py-2 bg-linear-to-b from-[#14B8A6] to-[#0F766E] text-white material-symbols-outlined  text-label-lg rounded-lg hover:opacity-90 transition-opacity shadow-sm flex items-center gap-2"

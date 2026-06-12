@@ -1,3 +1,5 @@
+import { BiArrowFromBottom } from "react-icons/bi";
+
 const Staffing_Widget = () => {
     return (
         <div className="md:col-span-4 bg-white rounded-xl card-shadow p-6 flex flex-col justify-between hover:ambient-glow transition-shadow duration-300">
@@ -38,7 +40,7 @@ const Staffing_Widget = () => {
                         </span>
                         <span className="material-symbols-outlined  text-label-sm text-[#10B981] flex items-center">
                             <span className="material-symbols-outlined  text-[14px]">
-                                arrow_upward
+                                <BiArrowFromBottom/>
                             </span>
                             +4%
                         </span>
