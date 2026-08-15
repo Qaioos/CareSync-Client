@@ -1,8 +1,11 @@
+import Layout from "../Components/Nurse/Pages/Layout"
+import Main from "../Components/Nurse/Pages/Main"
 
 const Nuse = () => {
   return (
     <div>
-      hi this pagefore  nuse 
+      <Layout/>
+      <Main/>
     </div>
   )
 }

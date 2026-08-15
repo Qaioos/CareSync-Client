@@ -1,54 +1,178 @@
-//React Icons
+import React, { useEffect, useRef, memo } from "react";
 import { GiCancel } from "react-icons/gi";
-import { IoIosCheckmarkCircleOutline } from "react-icons/io";
-import { MdPersonAddAlt1 } from "react-icons/md";
-import { LiaSyncAltSolid } from "react-icons/lia";
 import { IoWarning } from "react-icons/io5";
+import toast from "react-hot-toast";
+
 import { useFetchAlerts } from "../../../Features/requests/AdminRequests";
 import { useAxiosPrivate } from "../../../Hook/RequestsWithToken/useAxiosPrivet";
-import toast from "react-hot-toast";
 import BtmToTop from "../../Ui/motion/BtmToTop";
-import { useEffect, useRef } from "react";
+import type {
+    Requests,
+    StrapiAlertPayload,
+} from "../../../Types/api.responses";
 
-const Emrgrncy_Alerts = () => {
+const getAlertStyle = (situation?: string): string => {
+    const normalizedSituation = situation?.toLowerCase().trim();
+    switch (normalizedSituation) {
+        case "critical":
+        case "code blue":
+            return "bg-error-container/50 border-error-container text-on-error-container";
+        case "warning":
+            return "bg-[#FEF3C7] border-[#FDE68A] text-[#B45309]";
+        case "routine":
+            return "bg-green-100 border-green-300 text-green-800";
+        default:
+            return "bg-gray-100 border-gray-300 text-gray-800";
+    }
+};
+
+interface AlertCardProps {
+    item: Requests;
+    onCancel: (id: string | number) => void;
+}
+
+const AlertCard = memo(({ item, onCancel }: AlertCardProps) => {
+    const uniqueKey = item.documentId || item.id;
+
+    // التعامل مع الكائن كـ StrapiAlertPayload ممتد لقراءة الخصائص المحتملة بأمان
+    const source =
+        (item as unknown as StrapiAlertPayload).attributes ||
+        (item as unknown as StrapiAlertPayload).data ||
+        (item as unknown as StrapiAlertPayload);
+
+    const rawDate =
+        source.publishedAt ||
+        source.createdAt ||
+        source.published_at ||
+        source.created_at;
+    const alertTime = rawDate
+        ? new Date(rawDate).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+          })
+        : new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+          });
+
+    const situation = source.Situation || source.situation || "Notice";
+    const roomNumber =
+        source.Room_Number ||
+        source.room_number ||
+        source.Room ||
+        source.room ||
+        "N/A";
+    const requestType =
+        source.RequestType || source.request_type || source.type || "Request";
+    const details = source.Details || source.details || source.description;
+
+    return (
+        <BtmToTop key={uniqueKey}>
+            <div
+                className={`${getAlertStyle(situation)} border p-3 rounded-lg flex gap-4 items-start justify-between transition-all duration-200 hover:shadow-sm`}
+            >
+                <div className="flex gap-3 items-start">
+                    <button
+                        onClick={() => onCancel(uniqueKey)}
+                        className="mt-0.5 text-gray-400 hover:text-red-600 transition-colors duration-150"
+                        title="Dismiss Alert"
+                        aria-label="Dismiss Alert"
+                    >
+                        <GiCancel className="text-lg" />
+                    </button>
+
+                    <div className="flex flex-col gap-0.5">
+                        <div className="flex items-center gap-2">
+                            <span className="font-bold text-sm tracking-wide">
+                                {situation}
+                            </span>
+                            <span className="text-xs opacity-75">|</span>
+                            <span className="text-sm font-medium">
+                                {requestType} (Room {roomNumber})
+                            </span>
+                        </div>
+                        {details && (
+                            <p className="text-xs opacity-90 leading-relaxed mt-0.5">
+                                {details}
+                            </p>
+                        )}
+                    </div>
+                </div>
+
+                <span className="text-xs font-semibold opacity-75 whitespace-nowrap bg-white/40 px-2 py-0.5 rounded">
+                    {alertTime}
+                </span>
+            </div>
+        </BtmToTop>
+    );
+});
+
+AlertCard.displayName = "AlertCard";
+
+const Emrgrncy_Alerts: React.FC = () => {
     const axiosPrivate = useAxiosPrivate();
+    const { request, setRequests, isLodaing, err } = useFetchAlerts();
 
-    const { request, isLodaing, err } = useFetchAlerts();
-
-    const previousLength = useRef<number | null>(null);
+    const lastNotifiedId = useRef<string | number | null>(null);
+    const isInitialLoad = useRef<boolean>(true);
 
     useEffect(() => {
-        if (!isLodaing && request) {
-            if (previousLength.current === null) {
-                previousLength.current = request.length;
+        if (!isLodaing && request && request.length > 0) {
+            const latestRequest = request[0];
+
+            if (isInitialLoad.current) {
+                lastNotifiedId.current = latestRequest.id;
+                isInitialLoad.current = false;
                 return;
             }
 
-            if (request.length > previousLength.current) {
-                const newRequest = request[request.length - 1];
+            if (latestRequest.id !== lastNotifiedId.current) {
+                lastNotifiedId.current = latestRequest.id;
 
                 const audio = new Audio(
                     "/public/Sounds/AlertAdmin/RequestForAdmin.mp3",
                 );
-                audio.play().catch((error) => {
-                    console.log(
-                        "Audio playback failed. Browser requires user interaction first:",
+                audio.play().catch((error: Error) => {
+                    console.warn(
+                        "Audio playback context requires user gesture first:",
                         error,
                     );
                 });
+
+                const toastSource =
+                    (latestRequest as unknown as StrapiAlertPayload)
+                        ?.attributes ||
+                    (latestRequest as unknown as StrapiAlertPayload)?.data ||
+                    (latestRequest as unknown as StrapiAlertPayload);
+
+                const toastSituation =
+                    toastSource?.Situation ||
+                    toastSource?.situation ||
+                    "Notice";
+                const toastRoom =
+                    toastSource?.Room_Number ||
+                    toastSource?.room_number ||
+                    toastSource?.Room ||
+                    toastSource?.room ||
+                    "N/A";
+                const toastType =
+                    toastSource?.RequestType ||
+                    toastSource?.request_type ||
+                    toastSource?.type ||
+                    "Request";
+
                 toast(
                     (t) => (
-                        <div className="flex flex-col gap-1 p-1">
+                        <div className="flex flex-col gap-1 p-1" role="alert">
                             <span className="font-bold text-error flex items-center gap-1">
-                                ⚠️ New Alert: {newRequest?.Situation}
+                                ⚠️ New Alert: {toastSituation}
                             </span>
-                            <p className="text-sm">
-                                Room {newRequest?.Room_Number} -{" "}
-                                {newRequest?.RequestType}
+                            <p className="text-sm text-gray-700">
+                                Room {toastRoom} - {toastType}
                             </p>
                             <button
                                 onClick={() => toast.dismiss(t.id)}
-                                className="mt-2 text-xs bg-gray-200 hover:bg-gray-300 py-1 px-2 rounded self-end font-medium"
+                                className="mt-2 text-xs bg-gray-200 hover:bg-gray-300 py-1 px-2 rounded self-end font-medium transition-colors"
                             >
                                 Dismiss
                             </button>
@@ -57,174 +181,80 @@ const Emrgrncy_Alerts = () => {
                     { duration: 4000 },
                 );
             }
-            previousLength.current = request.length;
         }
     }, [request, isLodaing]);
 
     if (isLodaing) {
-        return <div className="loading"> Lodaing Data...</div>;
+        return (
+            <div className="md:col-span-4 bg-white rounded-xl card-shadow p-6 flex items-center justify-center min-h-[200px]">
+                <div className="text-sm font-medium text-gray-400 animate-pulse">
+                    Loading Alerts...
+                </div>
+            </div>
+        );
     }
 
     if (err) {
-        return <div className="error-message">{err}</div>;
+        return (
+            <div className="md:col-span-4 bg-white rounded-xl card-shadow p-6 flex items-center justify-center min-h-[200px] border border-red-100">
+                <div className="text-sm font-medium text-red-600">⚠️ {err}</div>
+            </div>
+        );
     }
 
-    const handelCancel = async (id: string) => {
-        try {
-            const respone = await axiosPrivate.delete(`/requests/${id}`);
-            console.log(respone);
+    const handleCancel = async (targetId: string | number) => {
+        if (!setRequests) return;
 
-            return toast.success("Successfully Deleted!");
+        setRequests((prev) =>
+            prev.filter(
+                (item) => item.documentId !== targetId && item.id !== targetId,
+            ),
+        );
+        toast.success("Alert successfully dismissed.");
+
+        try {
+            await axiosPrivate.delete(`/requests/${targetId}`);
         } catch (error) {
-            console.error("Failed to cancel request:", error);
-            return toast.error("Failed to cancel request. Please try again.");
+            console.error("Failed to sync deletion with server:", error);
+            toast.error("Network sync failed. Please reload the dashboard.");
         }
     };
 
     return (
-        <div className="md:col-span-4  bg-white rounded-xl card-shadow p-6 flex flex-col gap-6 row-span-2">
+        <div className="md:col-span-4 bg-white rounded-xl card-shadow p-6 flex flex-col gap-6 row-span-2">
             <div>
-                <h3 className="material-symbols-outlined  text-on-surface mb-4 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-4xl  text-error">
+                <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span className="text-3xl text-error">
                         <IoWarning />
                     </span>
                     Critical Alerts
                 </h3>
 
-                <div className="space-y-3 overflow-y-scroll h-40">
-                    {request.length > 0 ? (
-                        request.map((Request) => {
-                            const getAlertStyle = (situation: string) => {
-                                switch (situation) {
-                                    case "Critical":
-                                        return "bg-error-container/50 border-error-container text-on-error-container";
-                                    case "Warning":
-                                        return " bg-[#FEF3C7] border-[#FDE68A] text-[#B45309] ";
-                                    case "Routine":
-                                        return "bg-green-100 border-green-300 text-green-800";
-                                    default:
-                                        return "bg-green-100 border-green-300 text-green-800";
-                                }
-                            };
-                            return (
-                                <BtmToTop key={Request.documentId}>
-                                    <div
-                                        className={`${getAlertStyle(Request?.Situation)} border border-error-container p-3 rounded-lg flex gap-3 items-start`}
-                                    >
-                                        <span className="material-symbols-outlined flex items-center text-[15px] ">
-                                            <GiCancel
-                                                onClick={() =>
-                                                    handelCancel(
-                                                        Request.documentId,
-                                                    )
-                                                }
-                                                className="mr-2 cursor-pointer "
-                                            />{" "}
-                                            {Request?.Situation}
-                                        </span>
-                                        <div>
-                                            <p className="material-symbols-outlined   text-label-md ">
-                                                {Request?.RequestType}-
-                                                {Request?.Room_Number}
-                                            </p>
-                                            <p className="material-symbols-outlined   text-label-sm ">
-                                                {Request?.Details}
-                                            </p>
-                                            <p className="material-symbols-outlined   text-label-sm ">
-                                                {Request?.publishedAt.slice(
-                                                    11,
-                                                    16,
-                                                )}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </BtmToTop>
-                            );
-                        })
+                <div className="space-y-3 overflow-y-auto max-h-60 pr-1 scrollbar-thin">
+                    {request && request.length > 0 ? (
+                        request
+                            .filter(
+                                (item, index, self) =>
+                                    self.findIndex(
+                                        (r) =>
+                                            (r.id && r.id === item.id) ||
+                                            (r.documentId &&
+                                                r.documentId ===
+                                                    item.documentId),
+                                    ) === index,
+                            )
+                            .map((item: Requests) => (
+                                <AlertCard
+                                    key={item.documentId || item.id}
+                                    item={item}
+                                    onCancel={handleCancel}
+                                />
+                            ))
                     ) : (
-                        <p className="text-center text-on-surface-variant">
-                            No Alerts at the moment.
-                        </p>
+                        <div className="text-center py-6 text-sm text-gray-400 font-medium">
+                            No active alerts at the moment.
+                        </div>
                     )}
-                    {/*                     <div className="bg-error-container/50 border border-error-container p-3 rounded-lg flex gap-3 items-start">
-                        <span className="material-symbols-outlined   text-error mt-0.5 text-[20px]">
-                            priority_high
-                        </span>
-                        <div>
-                            <p className="material-symbols-outlined   text-label-md text-on-error-container">
-                                
-                                - Room 402
-                            </p>
-                            <p className="material-symbols-outlined   text-label-sm text-error/80 mt-1">
-                                Response initiated 2m ago. Backup requested.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="bg-[#FEF3C7] border border-[#FDE68A] p-3 rounded-lg flex gap-3 items-start">
-                        <span className="material-symbols-outlined   text-[#B45309] mt-0.5 text-[20px]">
-                            person_off
-                        </span>
-                        <div>
-                            <p className="material-symbols-outlined   text-label-md text-[#92400E]">
-                                Call Out - RN Sarah Jenkins
-                            </p>
-                            <p className="material-symbols-outlined   text-label-sm text-[#B45309]/80 mt-1">
-                                Night shift. Coverage needed in Oncology.
-                            </p>
-                        </div>
-                    </div> */}
-                </div>
-            </div>
-            <hr className="border-outline-variant/30" />
-            <div className="flex-1">
-                <h3 className="material-symbols-outlinedtext-headline-sm text-on-surface mb-4">
-                    Activity Feed
-                </h3>
-                <div className="relative pl-4 space-y-6 before:content-[''] before:absolute before:left-1.75 before:top-2 before:bottom-0 before:w-0.5 before:bg-outline-variant/30">
-                    <div className="relative">
-                        <div className="absolute -left-6 bg-surface-container-lowest p-1 rounded-full border border-outline-variant/30 z-10">
-                            <span className="material-symbols-outlined   text-[14px] text-primary">
-                                <IoIosCheckmarkCircleOutline />
-                            </span>
-                        </div>
-                        <p className="font-body-sm text-body-sm text-on-surface">
-                            Shift handoff completed for
-                            <span className="font-semibold">ICU Team A</span>.
-                        </p>
-                        <span className="material-symbols-outlined   text-label-sm text-on-surface-variant">
-                            10 mins ago
-                        </span>
-                    </div>
-                    <div className="relative">
-                        <div className="absolute -left-6 bg-surface-container-lowest p-1 rounded-full border border-outline-variant/30 z-10">
-                            <span className="material-symbols-outlined   text-[14px] text-[#14B8A6]">
-                                <MdPersonAddAlt1 />
-                            </span>
-                        </div>
-                        <p className="font-body-sm text-body-sm text-on-surface">
-                            Agency Nurse
-                            <span className="font-semibold">M. Reyes</span>
-                            clocked in.
-                        </p>
-                        <span className="material-symbols-outlined   text-label-sm text-on-surface-variant">
-                            45 mins ago
-                        </span>
-                    </div>
-                    <div className="relative">
-                        <div className="absolute -left-6 bg-surface-container-lowest p-1 rounded-full border border-outline-variant/30 z-10">
-                            <span className="material-symbols-outlined   text-[14px] text-outline">
-                                <LiaSyncAltSolid />
-                            </span>
-                        </div>
-                        <p className="font-body-sm text-body-sm text-on-surface">
-                            Automated schedule re-balancing executed for
-                            Med/Surg.
-                        </p>
-                        <span className="material-symbols-outlined   text-label-sm text-on-surface-variant">
-                            2 hrs ago
-                        </span>
-                    </div>
                 </div>
             </div>
         </div>
