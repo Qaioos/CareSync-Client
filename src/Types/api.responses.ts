@@ -41,7 +41,7 @@ export interface NurseCoverage {
     patients?: number;
 }
 
-export interface Requests {
+/* export interface Requests {
     Details: string;
     RequestType: string;
     Room_Number: number;
@@ -52,7 +52,7 @@ export interface Requests {
     publishedAt: string;
     updatedAt: string;
 }
-
+ */
 export interface Department {
     ActiveBeds: number;
     Situation: string;
@@ -86,4 +86,54 @@ Priority: string
 Room:string
 Title:string
 Worker: string
+}
+// يمثل كائن الطلب النظيف والموحد في الفرونت إند
+export interface Requests {
+    id: number;
+    documentId?: string;
+    Details?: string;
+    RequestType?: string;
+    Room_Number?: string | number;
+    Situation?: string;
+    createdAt?: string;
+    publishedAt?: string;
+    updatedAt?: string;
+}
+
+// يمثل الهيكل الداخلي المرن لبيانات السيرفر وسوكيت Strapi (بحروف صغيرة أو كبيرة)
+export interface StrapiAlertPayload {
+    id?: string | number;
+    documentId?: string;
+    documentid?: string;
+    Details?: string;
+    details?: string;
+    description?: string;
+    RequestType?: string;
+    requestType?: string;
+    request_type?: string;
+    type?: string;
+    Room_Number?: string | number;
+    room_number?: string | number;
+    Room?: string | number;
+    room?: string | number;
+    Situation?: string;
+    situation?: string;
+    createdAt?: string;
+    created_at?: string;
+    publishedAt?: string;
+    published_at?: string;
+    updatedAt?: string;
+    updated_at?: string;
+    attributes?: StrapiAlertPayload; // في حال وجود تغليف داخلي إضافي
+}
+
+// الكائن الرئيسي المستلم من أحداث السوكيت في Strapi
+export interface StrapiSocketResponse {
+    id?: string | number;
+    event?: string;
+    model?: string;
+    entry?: StrapiAlertPayload;
+    result?: StrapiAlertPayload;
+    data?: StrapiAlertPayload;
+    attributes?: StrapiAlertPayload;
 }
