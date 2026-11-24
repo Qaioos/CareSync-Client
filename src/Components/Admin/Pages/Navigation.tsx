@@ -60,16 +60,16 @@ const Navigation = () => {
                     <MdAnalytics className="text-[21px]" aria-hidden="true" />
                     <span className="text-sm">Analytics</span>
                 </Link>
-                <a
+                <Link
                     className="group flex items-center gap-4 rounded-xl px-4 py-3 font-medium text-[#607774] transition-all duration-200 hover:translate-x-1 hover:bg-[#e8f4f1] hover:text-primary-container active:scale-[0.98]"
-                    href="#"
+                    to="/admin/notifications"
                 >
                     <MdNotifications
                         className="text-[21px]"
                         aria-hidden="true"
                     />
                     <span className="text-sm">Notifications</span>
-                </a>
+                </Link>
             </div>
             <div className="mt-8 rounded-2xl border border-[#dce9e6] bg-white p-3 shadow-[0_8px_20px_rgba(15,118,110,0.05)]">
                 <div className="flex items-center gap-3">
