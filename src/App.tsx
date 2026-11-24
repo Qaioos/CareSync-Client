@@ -5,9 +5,11 @@ import Layout from "./Components/Layout/Layout";
 import ProtectedRoute from "./Routes/ProtectedRoute";
 import Nuse from "./Pages/Nuse";
 import Admin from "./Pages/Admin";
+import Staff from "./Pages/Staff";
+import Scheduling from "./Pages/Scheduling";
 import useAuth from "./Hook/authUser/useAuth";
 
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 
 function App() {
     const { auth } = useAuth();
@@ -22,7 +24,7 @@ function App() {
 
     return (
         <>
-        <Toaster position="top-center" reverseOrder={false} />
+            <Toaster position="top-center" reverseOrder={false} />
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={defaultRedirect} />
@@ -40,6 +42,11 @@ function App() {
 
                     <Route element={<ProtectedRoute allowedRoles="Admin" />}>
                         <Route path="admin" element={<Admin />} />
+                        <Route path="admin/staff" element={<Staff />} />
+                        <Route
+                            path="admin/scheduling"
+                            element={<Scheduling />}
+                        />
                     </Route>
                 </Route>
             </Routes>
