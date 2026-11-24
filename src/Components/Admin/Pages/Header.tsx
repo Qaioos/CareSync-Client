@@ -1,29 +1,32 @@
-
 const Header = () => {
     return (
-        <header className="hidden md:flex bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-md fixed top-0 right-0 left-64 z-40 shadow-[0px_4px_12px_rgba(15,23,42,0.05)] dark:shadow-none flex items-center justify-between px-8 h-16">
+        <header className="fixed left-0 right-0 top-0 z-40 max-md:hidden h-16 items-center justify-between border-b border-[#dce9e6] bg-white/85 px-8 shadow-[0_4px_18px_rgba(15,23,42,0.04)] backdrop-blur-xl md:left-64 md:flex">
             <div className="flex-1 flex items-center">
                 <div className="relative w-96">
-                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">
-                        
-                    </span>
+                    
                     <input
-                        className="w-full pl-10 pr-4 py-2 bg-[#F8FAFC] border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-[#14B8A6] focus:ring-[3px] focus:ring-[#14B8A6]/20 transition-all"
+                        className="w-full rounded-xl border border-[#dce9e6] bg-[#f4f8f7] py-2.5 pl-10 pr-4 text-sm text-[#163432] outline-none transition-all placeholder:text-[#8aa09d] focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
                         placeholder="Search across hospital data..."
                         type="text"
                     />
                 </div>
             </div>
             <div className="flex items-center gap-4">
-                <button className="p-2 text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-high dark:hover:bg-surface-container-highest rounded-lg transition-all focus:ring-2 focus:ring-primary/20 dark:focus:ring-primary-fixed/20 duration-300">
+                <button
+                    aria-label="Notifications"
+                    className="rounded-xl p-2 text-[#607774] transition-all hover:bg-[#e8f4f1] hover:text-primary-container focus:ring-2 focus:ring-primary/20"
+                >
                     <span className="material-symbols-outlined">
                         notifications
                     </span>
                 </button>
-                <button className="p-2 text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-high dark:hover:bg-surface-container-highest rounded-lg transition-all focus:ring-2 focus:ring-primary/20 dark:focus:ring-primary-fixed/20 duration-300">
+                <button
+                    aria-label="Settings"
+                    className="rounded-xl p-2 text-[#607774] transition-all hover:bg-[#e8f4f1] hover:text-primary-container focus:ring-2 focus:ring-primary/20"
+                >
                     <span className="material-symbols-outlined">settings</span>
                 </button>
-                <div className="h-8 w-8 rounded-full bg-surface-container-high overflow-hidden ml-2 border border-outline-variant/30 cursor-pointer">
+                <div className="ml-2 h-9 w-9 cursor-pointer overflow-hidden rounded-full border-2 border-white bg-[#d8ebe7] shadow-sm">
                     <img
                         alt="Administrator Profile"
                         className="w-full h-full object-cover"
