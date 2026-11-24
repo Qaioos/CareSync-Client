@@ -5,8 +5,9 @@ import Layout from "./Components/Layout/Layout";
 import ProtectedRoute from "./Routes/ProtectedRoute";
 import Nuse from "./Pages/Nuse";
 import Admin from "./Pages/Admin";
-import Staff from "./Pages/Staff";
-import Scheduling from "./Pages/Scheduling";
+import Staff from "./Pages/Staff.tsx";
+import Scheduling from "./Pages/Scheduling.tsx";
+import Analytics from "./Pages/Analytics.tsx";
 import useAuth from "./Hook/authUser/useAuth";
 
 import { Toaster } from "react-hot-toast";
@@ -47,6 +48,7 @@ function App() {
                             path="admin/scheduling"
                             element={<Scheduling />}
                         />
+                        <Route path="admin/analytics" element={<Analytics />} />
                     </Route>
                 </Route>
             </Routes>
