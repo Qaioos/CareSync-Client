@@ -1,9 +1,24 @@
-const Header = () => {
+import { MdMenu, MdNotifications, MdSettings, MdSearch } from "react-icons/md";
+
+interface HeaderProps {
+    onOpenNavigation: () => void;
+}
+
+const Header = ({ onOpenNavigation }: HeaderProps) => {
     return (
-        <header className="fixed left-0 right-0 top-0 z-40 max-md:hidden h-16 items-center justify-between border-b border-[#dce9e6] bg-white/85 px-8 shadow-[0_4px_18px_rgba(15,23,42,0.04)] backdrop-blur-xl md:left-64 md:flex">
-            <div className="flex-1 flex items-center">
+        <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#dce9e6] bg-white/90 px-4 shadow-[0_4px_18px_rgba(15,23,42,0.04)] backdrop-blur-xl md:left-72 md:px-8">
+            <button
+                type="button"
+                aria-label="Open navigation"
+                className="mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#dce9e6] bg-white text-[#607774] transition hover:bg-[#e8f4f1] hover:text-primary-container md:hidden"
+                onClick={onOpenNavigation}
+            >
+                <MdMenu className="text-2xl" />
+            </button>
+
+            <div className="hidden flex-1 items-center md:flex">
                 <div className="relative w-96">
-                    
+                    <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-lg text-[#91a5a2]" />
                     <input
                         className="w-full rounded-xl border border-[#dce9e6] bg-[#f4f8f7] py-2.5 pl-10 pr-4 text-sm text-[#163432] outline-none transition-all placeholder:text-[#8aa09d] focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
                         placeholder="Search across hospital data..."
@@ -11,20 +26,18 @@ const Header = () => {
                     />
                 </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="ml-auto flex items-center gap-2 md:gap-4">
                 <button
                     aria-label="Notifications"
                     className="rounded-xl p-2 text-[#607774] transition-all hover:bg-[#e8f4f1] hover:text-primary-container focus:ring-2 focus:ring-primary/20"
                 >
-                    <span className="material-symbols-outlined">
-                        notifications
-                    </span>
+                    <MdNotifications className="text-xl" />
                 </button>
                 <button
                     aria-label="Settings"
                     className="rounded-xl p-2 text-[#607774] transition-all hover:bg-[#e8f4f1] hover:text-primary-container focus:ring-2 focus:ring-primary/20"
                 >
-                    <span className="material-symbols-outlined">settings</span>
+                    <MdSettings className="text-xl" />
                 </button>
                 <div className="ml-2 h-9 w-9 cursor-pointer overflow-hidden rounded-full border-2 border-white bg-[#d8ebe7] shadow-sm">
                     <img
