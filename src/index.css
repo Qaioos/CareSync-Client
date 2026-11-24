@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -67,17 +68,17 @@
     --spacing-base: 8px;
 
     /* إعدادات نوع الخط FontFamily */
-    --font-headline-xl: "Geist";
-    --font-headline-lg-mobile: "Geist";
-    --font-headline-lg: "Geist";
-    --font-label-md: "Geist";
-    --font-headline-sm: "Geist";
-    --font-body-md: "Inter";
-    --font-label-lg: "Geist";
-    --font-body-sm: "Inter";
-    --font-body-lg: "Inter";
-    --font-label-sm: "Geist";
-    --font-headline-md: "Geist";
+    --font-headline-xl: "Plus Jakarta Sans";
+    --font-headline-lg-mobile: "Plus Jakarta Sans";
+    --font-headline-lg: "Plus Jakarta Sans";
+    --font-label-md: "Plus Jakarta Sans";
+    --font-headline-sm: "Plus Jakarta Sans";
+    --font-body-md: "Plus Jakarta Sans";
+    --font-label-lg: "Plus Jakarta Sans";
+    --font-body-sm: "Plus Jakarta Sans";
+    --font-body-lg: "Plus Jakarta Sans";
+    --font-label-sm: "Plus Jakarta Sans";
+    --font-headline-md: "Plus Jakarta Sans";
 
     /* إعدادات أحجام الخطوط FontSize */
     --text-headline-xl: 48px;
@@ -250,9 +251,7 @@
 }
 
 body {
-    font-family:
-        "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans",
-        Arial, sans-serif;
+    font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 .backIMG {
