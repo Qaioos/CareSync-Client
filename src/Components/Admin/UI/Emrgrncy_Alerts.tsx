@@ -8,7 +8,7 @@ import { useFetchAlerts } from "../../../Features/requests/AdminRequests";
 import { useAxiosPrivate } from "../../../Hook/RequestsWithToken/useAxiosPrivet";
 import toast from "react-hot-toast";
 import BtmToTop from "../../Ui/motion/BtmToTop";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 const Emrgrncy_Alerts = () => {
     const axiosPrivate = useAxiosPrivate();
@@ -16,6 +16,22 @@ const Emrgrncy_Alerts = () => {
     const { request, isLodaing, err } = useFetchAlerts();
 
     const previousLength = useRef<number | null>(null);
+    const sortedRequests = useMemo(() => {
+        if (!Array.isArray(request)) {
+            return [];
+        }
+
+        return [...request].sort((first, second) => {
+            const firstDate = new Date(
+                first.publishedAt || first.createdAt,
+            ).getTime();
+            const secondDate = new Date(
+                second.publishedAt || second.createdAt,
+            ).getTime();
+
+            return (secondDate || 0) - (firstDate || 0);
+        });
+    }, [request]);
 
     useEffect(() => {
         if (!isLodaing && request) {
@@ -25,7 +41,7 @@ const Emrgrncy_Alerts = () => {
             }
 
             if (request.length > previousLength.current) {
-                const newRequest = request[request.length - 1];
+                const newRequest = sortedRequests[0];
 
                 const audio = new Audio(
                     "/public/Sounds/AlertAdmin/RequestForAdmin.mp3",
@@ -59,7 +75,7 @@ const Emrgrncy_Alerts = () => {
             }
             previousLength.current = request.length;
         }
-    }, [request, isLodaing]);
+    }, [request, isLodaing, sortedRequests]);
 
     if (isLodaing) {
         return <div className="loading"> Lodaing Data...</div>;
@@ -92,8 +108,8 @@ const Emrgrncy_Alerts = () => {
                 </h3>
 
                 <div className="space-y-3 overflow-y-scroll h-40">
-                    {request.length > 0 ? (
-                        request.map((Request) => {
+                    {sortedRequests.length > 0 ? (
+                        sortedRequests.map((Request) => {
                             const getAlertStyle = (situation: string) => {
                                 switch (situation) {
                                     case "Critical":

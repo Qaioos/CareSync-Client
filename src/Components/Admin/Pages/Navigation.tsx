@@ -1,63 +1,91 @@
-import { MdLocalHospital } from "react-icons/md";
+import {
+    MdAnalytics,
+    MdCalendarMonth,
+    MdDashboard,
+    MdGroups,
+    MdLocalHospital,
+    MdNotifications,
+} from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const Navigation = () => {
     return (
-        <nav className=" hidden md:flex bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-xl fixed h-screen w-64 left-0 top-0 overflow-y-auto border-r border-outline-variant/20 dark:border-outline/20 shadow-sm dark:shadow-none flex-col py-8 gap-2 z-50">
-            <div className="px-8 mb-8 flex items-center gap-3">
-                <p className="my-10"><MdLocalHospital className="text-primary text-4xl"/></p>
+        <nav className="fixed left-0 top-0 z-50 hidden h-screen w-72 flex-col overflow-y-auto border-r border-[#dce9e6] bg-[#f8fcfb] px-5 py-6 shadow-[8px_0_24px_rgba(15,118,110,0.04)] md:flex">
+            <div className="mb-10 flex items-center gap-3 px-2">
+                <p className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-container text-white shadow-[0_8px_18px_rgba(15,118,110,0.2)]">
+                    <MdLocalHospital className="text-3xl" />
+                </p>
 
                 <div>
-                    <h1 className="font-headline-md material-symbols-outlined  font-bold text-primary dark:text-primary-fixed">
+                    <h1 className="text-lg font-extrabold tracking-tight text-[#163432]">
                         HealthCare Pro
                     </h1>
-                    <p className="material-symbols-outlined text-label-sm material-symbols-outlined">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-[#7b918e]">
                         Clinical Management
                     </p>
                 </div>
             </div>
-            <div className="flex-1 flex flex-col gap-1 px-5">
+            <div className="mb-3 px-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#91a5a2]">
+                Workspace
+            </div>
+            <div className="flex flex-1 flex-col gap-1 px-0">
+                <Link
+                    className="group flex items-center gap-4 rounded-xl border border-[#bfe5de] bg-[#e5f5f1] px-4 py-3 font-bold text-primary-container shadow-sm transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
+                    to="/admin"
+                >
+                    <MdDashboard className="text-[21px]" aria-hidden="true" />
+                    <span className="text-sm">Dashboard</span>
+                </Link>
+                <Link
+                    className="group flex items-center gap-4 rounded-xl px-4 py-3 font-medium text-[#607774] transition-all duration-200 hover:translate-x-1 hover:bg-[#e8f4f1] hover:text-primary-container active:scale-[0.98]"
+                    to="/admin/staff"
+                >
+                    <MdGroups className="text-[21px]" aria-hidden="true" />
+                    <span className="text-sm">Staff</span>
+                </Link>
+                <Link
+                    className="group flex items-center gap-4 rounded-xl px-4 py-3 font-medium text-[#607774] transition-all duration-200 hover:translate-x-1 hover:bg-[#e8f4f1] hover:text-primary-container active:scale-[0.98]"
+                    to="/admin/scheduling"
+                >
+                    <MdCalendarMonth
+                        className="text-[21px]"
+                        aria-hidden="true"
+                    />
+                    <span className="text-sm">Scheduling</span>
+                </Link>
                 <a
-                    className="flex items-center gap-2 px-4 py-3 rounded-lg text-primary dark:text-primary-fixed font-bold border-r-4 border-primary dark:border-primary-fixed bg-primary-container/10 dark:bg-primary-container/20 active:scale-[0.98] transition-transform duration-150"
+                    className="group flex items-center gap-4 rounded-xl px-4 py-3 font-medium text-[#607774] transition-all duration-200 hover:translate-x-1 hover:bg-[#e8f4f1] hover:text-primary-container active:scale-[0.98]"
                     href="#"
                 >
-                    <span className="material-symbols-outlined ">dashboard</span>
-                
+                    <MdAnalytics className="text-[21px]" aria-hidden="true" />
+                    <span className="text-sm">Analytics</span>
                 </a>
                 <a
-                    className="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant font-medium hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors duration-200 active:scale-[0.98] transition-transform duration-150"
+                    className="group flex items-center gap-4 rounded-xl px-4 py-3 font-medium text-[#607774] transition-all duration-200 hover:translate-x-1 hover:bg-[#e8f4f1] hover:text-primary-container active:scale-[0.98]"
                     href="#"
                 >
-                    <span className="material-symbols-outlined">group</span>
-                    <span className="material-symbols-outlined">Staff</span>
+                    <MdNotifications
+                        className="text-[21px]"
+                        aria-hidden="true"
+                    />
+                    <span className="text-sm">Notifications</span>
                 </a>
-                <a
-                    className="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant font-medium hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors duration-200 active:scale-[0.98] transition-transform duration-150"
-                    href="#"
-                >
-                    <span className="material-symbols-outlined">
-                        Scheduling
-                    </span>
-                </a>
-                <a
-                    className="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant font-medium hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors duration-200 active:scale-[0.98] transition-transform duration-150"
-                    href="#"
-                >
-                    <span className="material-symbols-outlined">analytics</span>
-                    <span className="material-symbols-outlined">
-                        Analytics
-                    </span>
-                </a>
-                <a
-                    className="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant font-medium hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors duration-200 active:scale-[0.98] transition-transform duration-150"
-                    href="#"
-                >
-                    <span className="material-symbols-outlined">
-                        notifications
-                    </span>
-                    <span className="material-symbols-outlined">
-                        Notifications
-                    </span>
-                </a>
+            </div>
+            <div className="mt-8 rounded-2xl border border-[#dce9e6] bg-white p-3 shadow-[0_8px_20px_rgba(15,118,110,0.05)]">
+                <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#d9efea] text-sm font-bold text-primary-container">
+                        AD
+                    </div>
+                    <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-bold text-[#163432]">
+                            Administrator
+                        </p>
+                        <p className="truncate text-xs text-[#7b918e]">
+                            System control center
+                        </p>
+                    </div>
+                    <span className="h-2.5 w-2.5 rounded-full bg-brand-secondray shadow-[0_0_0_4px_#e5f5f1]" />
+                </div>
             </div>
         </nav>
     );

@@ -31,34 +31,29 @@ const Main = () => {
     };
 
     return (
-        <main className="md:ml-64 pt-20 px-container-padding-mobile md:px-container-padding-desktop pb-24 max-w-400 mx-auto">
+        <main className="min-h-screen bg-[#f4f8f7] md:ml-64 pt-20 px-container-padding-mobile md:px-container-padding-desktop pb-24 max-w-400 mx-auto">
             {/* <!-- Header --> */}
-            <div className="mb-section-margin mt-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="mb-8 mt-8 flex flex-col md:flex-row md:items-end justify-between gap-6 rounded-2xl border border-[#dce9e6] bg-white/80 p-6 shadow-[0_12px_30px_rgba(15,118,110,0.06)] backdrop-blur-sm">
                 <div>
-                    <h2 className=" md:material-symbols-outlined   text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2 material-symbols-outlined">
+                    <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-[#0f766e]">
+                        Operations overview
+                    </p>
+                    <h2 className="text-2xl font-bold tracking-tight text-[#163432] md:text-3xl">
                         Supervisor Dashboard
                     </h2>
-                    <p className="material-symbols-outlined   text-body-md text-on-surface-variant">
+                    <p className="mt-2 max-w-xl text-sm leading-6 text-[#607774] md:text-base">
                         Real-time overview of hospital staffing and operational
                         efficiency.
                     </p>
                 </div>
-                <div className="flex gap-3">
-
-                    
-                        <BtnExport/>
-                    
-
-                    {/* <button className="cursor-pointer px-4 py-2 bg-linear-to-b from-[#14B8A6] to-[#0F766E] text-white material-symbols-outlined  text-label-lg rounded-lg hover:opacity-90 transition-opacity shadow-sm flex items-center gap-2">
-                        Manage Shifts
-                    </button> */}
-
-                    
+                <div className="flex flex-wrap gap-3">
+                    <BtnExport />
                     <button
                         onClick={() => setisOpen(true)}
-                        className="cursor-pointer px-4 py-2 bg-linear-to-b from-[#14B8A6] to-[#0F766E] text-white material-symbols-outlined  text-label-lg rounded-lg hover:opacity-90 transition-opacity shadow-sm flex items-center gap-2"
+                        className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-[#0f766e] px-4 py-2.5 text-sm font-bold text-white shadow-[0_8px_18px_rgba(15,118,110,0.22)] transition hover:-translate-y-0.5 hover:bg-[#115e59] focus:outline-none focus:ring-4 focus:ring-[#14b8a6]/20"
                     >
-                        add Task
+                        <span className="text-lg leading-none">+</span>
+                        Add task
                     </button>
                 </div>
             </div>
@@ -69,7 +64,7 @@ const Main = () => {
                 onAdd={handleAddTask}
             />
             {/*  <!-- Bento Grid Layout --> */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-section-margin">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-12">
                 {/*  <!-- Main Chart: Nurse Coverage --> */}
                 <Main_Chart />
 
