@@ -53,13 +53,13 @@ const Navigation = () => {
                     />
                     <span className="text-sm">Scheduling</span>
                 </Link>
-                <a
+                <Link
                     className="group flex items-center gap-4 rounded-xl px-4 py-3 font-medium text-[#607774] transition-all duration-200 hover:translate-x-1 hover:bg-[#e8f4f1] hover:text-primary-container active:scale-[0.98]"
-                    href="#"
+                    to="/admin/analytics"
                 >
                     <MdAnalytics className="text-[21px]" aria-hidden="true" />
                     <span className="text-sm">Analytics</span>
-                </a>
+                </Link>
                 <a
                     className="group flex items-center gap-4 rounded-xl px-4 py-3 font-medium text-[#607774] transition-all duration-200 hover:translate-x-1 hover:bg-[#e8f4f1] hover:text-primary-container active:scale-[0.98]"
                     href="#"
