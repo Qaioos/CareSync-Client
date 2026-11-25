@@ -1,4 +1,5 @@
 import { MdMenu, MdNotifications, MdSettings, MdSearch } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 interface HeaderProps {
     onOpenNavigation: () => void;
@@ -39,14 +40,19 @@ const Header = ({ onOpenNavigation }: HeaderProps) => {
                 >
                     <MdSettings className="text-xl" />
                 </button>
-                <div className="ml-2 h-9 w-9 cursor-pointer overflow-hidden rounded-full border-2 border-white bg-[#d8ebe7] shadow-sm">
+                <Link
+                    to="/admin/profile"
+                    aria-label="My profile"
+                    title="My profile"
+                    className="ml-2 flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-white bg-[#d8ebe7] shadow-sm transition hover:ring-2 hover:ring-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
+                >
                     <img
                         alt="Administrator Profile"
                         className="w-full h-full object-cover"
                         data-alt="A professional headshot of a confident female healthcare administrator in a bright, modern clinical setting. Soft, natural lighting. Dressed in business casual attire with a subtle stethoscope."
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJDWjh5-VyOMTaw6HRfWQAppMcebNw1gyvkQdqZZUHF9F9CBF8eUYSlv9o9FH3e1KWPPyCgxZX8drU_73qrHu1iKf6f3YLl8xmOSsr2FocpJp5ISFkaiy42W1YNMzn75SAT3vZ4JXIF8DhChvDXHaHLVdu-ZnV25sFU9_9px0-DXSVKR8hYGCtEeIDIje12PRyGdhyAXNlnx9Yct_5zEVzxvYG1aMaqgEVOPM7SxX5USgjIXAaSL6BYiy-qOLcMllRspQD0SGuKqxF"
                     />
-                </div>
+                </Link>
             </div>
         </header>
     );
