@@ -16,7 +16,9 @@ import {
     ResourceState,
 } from "../Components/Admin/Shared/ResourceState";
 import SummaryCard from "../Components/Admin/Shared/SummaryCard";
+import BtmToTop from "../Components/Ui/motion/BtmToTop";
 import ShiftRow from "../Components/Admin/Scheduling/ShiftRow";
+import CreateShiftModal from "../Components/Admin/Scheduling/CreateShiftModal";
 import { getShiftStaff } from "../Components/Admin/Scheduling/scheduling.utils";
 import { useAxiosPrivate } from "../Hook/RequestsWithToken/useAxiosPrivet";
 import type { Shift } from "../Types/scheduling";
@@ -33,6 +35,8 @@ const Scheduling = () => {
     const [error, setError] = useState("");
     const [search, setSearch] = useState("");
     const [shiftFilter, setShiftFilter] = useState<ShiftFilter>("all");
+    const [isCreateShiftOpen, setIsCreateShiftOpen] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(0);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -69,7 +73,7 @@ const Scheduling = () => {
             isMounted = false;
             controller.abort();
         };
-    }, [axiosPrivate]);
+    }, [axiosPrivate, refreshKey]);
 
     const filteredShifts = useMemo(() => {
         const query = search.trim().toLowerCase();
@@ -119,9 +123,8 @@ const Scheduling = () => {
                         action={
                             <button
                                 type="button"
-                                disabled
-                                title="Shift creation will be enabled when the API workflow is connected"
-                                className="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-[#dce9e6] px-4 py-3 text-sm font-bold text-[#7b918e]"
+                                onClick={() => setIsCreateShiftOpen(true)}
+                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-container px-4 py-3 text-sm font-bold text-white shadow-[0_8px_18px_rgba(15,118,110,0.2)] transition hover:-translate-y-0.5 hover:bg-[#115e59] focus:outline-none focus:ring-4 focus:ring-primary/20"
                             >
                                 <MdAdd className="text-lg" aria-hidden="true" />
                                 Create shift
@@ -150,65 +153,72 @@ const Scheduling = () => {
                         />
                     </div>
 
-                    <section className="overflow-hidden rounded-2xl border border-[#dce9e6] bg-white shadow-[0_12px_30px_rgba(15,118,110,0.06)]">
-                        <div className="flex flex-col gap-4 border-b border-[#e7efed] p-5 md:flex-row md:items-center md:justify-between">
-                            <div>
-                                <div className="flex items-center gap-2">
-                                    <h3 className="text-lg font-bold text-[#163432]">
-                                        Shift board
-                                    </h3>
-                                    <span className="rounded-full bg-[#e5f5f1] px-2 py-1 text-[10px] font-bold text-primary-container">
-                                        {departmentsCount} departments
-                                    </span>
+                    <BtmToTop delay={0.18}>
+                        <section className="overflow-hidden rounded-2xl border border-[#dce9e6] bg-white shadow-[0_12px_30px_rgba(15,118,110,0.06)]">
+                            <div className="flex flex-col gap-4 border-b border-[#e7efed] p-5 md:flex-row md:items-center md:justify-between">
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <h3 className="text-lg font-bold text-[#163432]">
+                                            Shift board
+                                        </h3>
+                                        <span className="rounded-full bg-[#e5f5f1] px-2 py-1 text-[10px] font-bold text-primary-container">
+                                            {departmentsCount} departments
+                                        </span>
+                                    </div>
+                                    <p className="mt-1 text-sm text-[#7b918e]">
+                                        {filteredShifts.length} of{" "}
+                                        {shifts.length} shifts shown
+                                    </p>
                                 </div>
-                                <p className="mt-1 text-sm text-[#7b918e]">
-                                    {filteredShifts.length} of {shifts.length}{" "}
-                                    shifts shown
-                                </p>
+                                <ResourceToolbar
+                                    search={search}
+                                    onSearchChange={setSearch}
+                                    searchPlaceholder="Search department or staff..."
+                                    filterValue={shiftFilter}
+                                    onFilterChange={setShiftFilter}
+                                    filterLabel="Filter by shift"
+                                    filterOptions={[
+                                        { label: "All shifts", value: "all" },
+                                        { label: "Day", value: "Day" },
+                                        { label: "Evening", value: "Evening" },
+                                        { label: "Night", value: "Night" },
+                                    ]}
+                                />
                             </div>
-                            <ResourceToolbar
-                                search={search}
-                                onSearchChange={setSearch}
-                                searchPlaceholder="Search department or staff..."
-                                filterValue={shiftFilter}
-                                onFilterChange={setShiftFilter}
-                                filterLabel="Filter by shift"
-                                filterOptions={[
-                                    { label: "All shifts", value: "all" },
-                                    { label: "Day", value: "Day" },
-                                    { label: "Evening", value: "Evening" },
-                                    { label: "Night", value: "Night" },
-                                ]}
-                            />
-                        </div>
 
-                        {isLoading ? (
-                            <ResourceLoading />
-                        ) : error ? (
-                            <ResourceState
-                                icon={<MdWarning />}
-                                title="Could not load the schedule"
-                                description={error}
-                            />
-                        ) : filteredShifts.length === 0 ? (
-                            <ResourceState
-                                icon={<MdGroups />}
-                                title="No shifts found"
-                                description="Try another search or shift type."
-                            />
-                        ) : (
-                            <div className="divide-y divide-[#edf3f1]">
-                                {filteredShifts.map((shift) => (
-                                    <ShiftRow
-                                        key={shift.documentId || shift.id}
-                                        shift={shift}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </section>
+                            {isLoading ? (
+                                <ResourceLoading />
+                            ) : error ? (
+                                <ResourceState
+                                    icon={<MdWarning />}
+                                    title="Could not load the schedule"
+                                    description={error}
+                                />
+                            ) : filteredShifts.length === 0 ? (
+                                <ResourceState
+                                    icon={<MdGroups />}
+                                    title="No shifts found"
+                                    description="Try another search or shift type."
+                                />
+                            ) : (
+                                <div className="divide-y divide-[#edf3f1]">
+                                    {filteredShifts.map((shift) => (
+                                        <ShiftRow
+                                            key={shift.documentId || shift.id}
+                                            shift={shift}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </section>
+                    </BtmToTop>
                 </div>
             </main>
+            <CreateShiftModal
+                isOpen={isCreateShiftOpen}
+                onClose={() => setIsCreateShiftOpen(false)}
+                onCreated={() => setRefreshKey((current) => current + 1)}
+            />
         </>
     );
 };

@@ -17,6 +17,7 @@ import {
     type PeriodFilter,
 } from "../Components/Admin/Analytics/analytics.utils";
 import { useAnalytics } from "../Features/analytics/useAnalytics";
+import BtmToTop from "../Components/Ui/motion/BtmToTop";
 
 const Analytics = () => {
     const { users, shifts, requests, departments, isLoading, error } =
@@ -83,31 +84,37 @@ const Analytics = () => {
                                 criticalAlerts={metrics.criticalAlerts}
                             />
 
-                            <div className="grid grid-cols-1 gap-5 xl:grid-cols-12">
-                                <DepartmentCapacityPanel
-                                    departments={departments}
-                                />
-
-                                <section className="rounded-2xl border border-[#dce9e6] bg-white p-5 xl:col-span-4">
-                                    <h3 className="text-lg font-bold text-[#163432]">
-                                        Shift distribution
-                                    </h3>
-                                    <p className="mt-1 text-sm text-[#7b918e]">
-                                        Coverage by shift type
-                                    </p>
-                                    <ShiftDistributionChart
-                                        data={metrics.shiftDistribution}
+                            <BtmToTop delay={0.18}>
+                                <div className="grid grid-cols-1 gap-5 xl:grid-cols-12">
+                                    <DepartmentCapacityPanel
+                                        departments={departments}
                                     />
-                                </section>
 
-                                <WaitingQueuePanel departments={departments} />
+                                    <section className="rounded-2xl border border-[#dce9e6] bg-white p-5 xl:col-span-4">
+                                        <h3 className="text-lg font-bold text-[#163432]">
+                                            Shift distribution
+                                        </h3>
+                                        <p className="mt-1 text-sm text-[#7b918e]">
+                                            Coverage by shift type
+                                        </p>
+                                        <ShiftDistributionChart
+                                            data={metrics.shiftDistribution}
+                                        />
+                                    </section>
 
-                                <OperationalRequestsPanel
-                                    requestTypes={metrics.requestTypes}
-                                    waitingPatients={metrics.waitingPatients}
-                                    scheduledShifts={shifts.length}
-                                />
-                            </div>
+                                    <WaitingQueuePanel
+                                        departments={departments}
+                                    />
+
+                                    <OperationalRequestsPanel
+                                        requestTypes={metrics.requestTypes}
+                                        waitingPatients={
+                                            metrics.waitingPatients
+                                        }
+                                        scheduledShifts={shifts.length}
+                                    />
+                                </div>
+                            </BtmToTop>
                         </>
                     )}
                 </div>
