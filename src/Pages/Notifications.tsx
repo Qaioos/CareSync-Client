@@ -14,6 +14,7 @@ import type {
     NotificationTypeFilter,
 } from "../Components/Admin/Notifications/notifications.utils";
 import { useNotifications } from "../Features/notifications/useNotifications";
+import BtmToTop from "../Components/Ui/motion/BtmToTop";
 
 const Notifications = () => {
     const { notifications, isLoading, error } = useNotifications();
@@ -63,56 +64,61 @@ const Notifications = () => {
 
                     <NotificationSummaryCards notifications={notifications} />
 
-                    <section className="overflow-hidden rounded-2xl border border-[#dce9e6] bg-white shadow-[0_12px_30px_rgba(15,118,110,0.06)]">
-                        <div className="flex flex-col gap-4 border-b border-[#e7efed] p-5 xl:flex-row xl:items-center xl:justify-between">
-                            <div>
-                                <h2 className="text-lg font-bold text-[#163432]">
-                                    Request alerts
-                                </h2>
-                                <p className="mt-1 text-sm text-[#7b918e]">
-                                    {filteredNotifications.length} of{" "}
-                                    {notifications.length} notifications shown
-                                </p>
+                    <BtmToTop delay={0.18}>
+                        <section className="overflow-hidden rounded-2xl border border-[#dce9e6] bg-white shadow-[0_12px_30px_rgba(15,118,110,0.06)]">
+                            <div className="flex flex-col gap-4 border-b border-[#e7efed] p-5 xl:flex-row xl:items-center xl:justify-between">
+                                <div>
+                                    <h2 className="text-lg font-bold text-[#163432]">
+                                        Request alerts
+                                    </h2>
+                                    <p className="mt-1 text-sm text-[#7b918e]">
+                                        {filteredNotifications.length} of{" "}
+                                        {notifications.length} notifications
+                                        shown
+                                    </p>
+                                </div>
+
+                                <NotificationToolbar
+                                    search={search}
+                                    onSearchChange={setSearch}
+                                    severity={severity}
+                                    onSeverityChange={setSeverity}
+                                    type={type}
+                                    onTypeChange={setType}
+                                />
                             </div>
 
-                            <NotificationToolbar
-                                search={search}
-                                onSearchChange={setSearch}
-                                severity={severity}
-                                onSeverityChange={setSeverity}
-                                type={type}
-                                onTypeChange={setType}
-                            />
-                        </div>
-
-                        {isLoading ? (
-                            <ResourceLoading rows={5} />
-                        ) : error ? (
-                            <ResourceState
-                                icon={<MdWarning />}
-                                title="Could not load notifications"
-                                description={error}
-                            />
-                        ) : filteredNotifications.length === 0 ? (
-                            <ResourceState
-                                icon={<MdNotifications />}
-                                title="No notifications found"
-                                description="Try changing your search or filters."
-                            />
-                        ) : (
-                            <div>
-                                {filteredNotifications.map((notification) => (
-                                    <NotificationCard
-                                        key={
-                                            notification.documentId ||
-                                            notification.id
-                                        }
-                                        notification={notification}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </section>
+                            {isLoading ? (
+                                <ResourceLoading rows={5} />
+                            ) : error ? (
+                                <ResourceState
+                                    icon={<MdWarning />}
+                                    title="Could not load notifications"
+                                    description={error}
+                                />
+                            ) : filteredNotifications.length === 0 ? (
+                                <ResourceState
+                                    icon={<MdNotifications />}
+                                    title="No notifications found"
+                                    description="Try changing your search or filters."
+                                />
+                            ) : (
+                                <div>
+                                    {filteredNotifications.map(
+                                        (notification) => (
+                                            <NotificationCard
+                                                key={
+                                                    notification.documentId ||
+                                                    notification.id
+                                                }
+                                                notification={notification}
+                                            />
+                                        ),
+                                    )}
+                                </div>
+                            )}
+                        </section>
+                    </BtmToTop>
                 </div>
             </main>
         </>

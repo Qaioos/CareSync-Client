@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import BtmToTop from "../../Ui/motion/BtmToTop";
 
 export type SummaryTone = "teal" | "green" | "amber";
 
@@ -7,9 +8,16 @@ interface SummaryCardProps {
     label: string;
     value: number;
     tone: SummaryTone;
+    animationDelay?: number;
 }
 
-const SummaryCard = ({ icon, label, value, tone }: SummaryCardProps) => {
+const SummaryCard = ({
+    icon,
+    label,
+    value,
+    tone,
+    animationDelay = 0.08,
+}: SummaryCardProps) => {
     const toneClasses: Record<SummaryTone, string> = {
         teal: "bg-[#e5f5f1] text-primary-container",
         green: "bg-[#eaf8ef] text-[#15803d]",
@@ -17,19 +25,23 @@ const SummaryCard = ({ icon, label, value, tone }: SummaryCardProps) => {
     };
 
     return (
-        <div className="flex items-center gap-4 rounded-2xl border border-[#dce9e6] bg-white p-5 shadow-[0_8px_20px_rgba(15,118,110,0.04)]">
-            <div
-                className={`flex h-11 w-11 items-center justify-center rounded-xl text-2xl ${toneClasses[tone]}`}
-            >
-                {icon}
+        <BtmToTop className="h-full" delay={animationDelay}>
+            <div className="flex h-full items-center gap-4 rounded-2xl border border-[#dce9e6] bg-white p-5 shadow-[0_8px_20px_rgba(15,118,110,0.04)]">
+                <div
+                    className={`flex h-11 w-11 items-center justify-center rounded-xl text-2xl ${toneClasses[tone]}`}
+                >
+                    {icon}
+                </div>
+                <div>
+                    <p className="text-2xl font-extrabold text-[#163432]">
+                        {value}
+                    </p>
+                    <p className="text-xs font-semibold text-[#7b918e]">
+                        {label}
+                    </p>
+                </div>
             </div>
-            <div>
-                <p className="text-2xl font-extrabold text-[#163432]">
-                    {value}
-                </p>
-                <p className="text-xs font-semibold text-[#7b918e]">{label}</p>
-            </div>
-        </div>
+        </BtmToTop>
     );
 };
 

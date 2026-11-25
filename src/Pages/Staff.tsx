@@ -15,7 +15,9 @@ import {
     ResourceState,
 } from "../Components/Admin/Shared/ResourceState";
 import SummaryCard from "../Components/Admin/Shared/SummaryCard";
+import BtmToTop from "../Components/Ui/motion/BtmToTop";
 import StaffRow from "../Components/Admin/Staff/StaffRow";
+import AddStaffModal from "../Components/Admin/Staff/AddStaffModal";
 import { getDisplayName } from "../Components/Admin/Staff/staff.utils";
 import { useAxiosPrivate } from "../Hook/RequestsWithToken/useAxiosPrivet";
 import type { StrapiUser } from "../Types/api.responses";
@@ -29,6 +31,8 @@ const Staff = () => {
     const [error, setError] = useState("");
     const [search, setSearch] = useState("");
     const [availability, setAvailability] = useState<AvailabilityFilter>("all");
+    const [isAddStaffOpen, setIsAddStaffOpen] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(0);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -69,7 +73,7 @@ const Staff = () => {
             isMounted = false;
             controller.abort();
         };
-    }, [axiosPrivate]);
+    }, [axiosPrivate, refreshKey]);
 
     const filteredStaff = useMemo(() => {
         const query = search.trim().toLowerCase();
@@ -115,9 +119,8 @@ const Staff = () => {
                         action={
                             <button
                                 type="button"
-                                disabled
-                                title="Staff creation will be enabled when the API endpoint is available"
-                                className="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-[#dce9e6] px-4 py-3 text-sm font-bold text-[#7b918e]"
+                                onClick={() => setIsAddStaffOpen(true)}
+                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-container px-4 py-3 text-sm font-bold text-white shadow-[0_8px_18px_rgba(15,118,110,0.2)] transition hover:-translate-y-0.5 hover:bg-[#115e59] focus:outline-none focus:ring-4 focus:ring-primary/20"
                             >
                                 <MdPersonAdd
                                     aria-hidden="true"
@@ -149,62 +152,72 @@ const Staff = () => {
                         />
                     </div>
 
-                    <section className="overflow-hidden rounded-2xl border border-[#dce9e6] bg-white shadow-[0_12px_30px_rgba(15,118,110,0.06)]">
-                        <div className="flex flex-col gap-4 border-b border-[#e7efed] p-5 md:flex-row md:items-center md:justify-between">
-                            <div>
-                                <h3 className="text-lg font-bold text-[#163432]">
-                                    Team members
-                                </h3>
-                                <p className="mt-1 text-sm text-[#7b918e]">
-                                    {filteredStaff.length} of {staff.length}{" "}
-                                    members shown
-                                </p>
+                    <BtmToTop delay={0.18}>
+                        <section className="overflow-hidden rounded-2xl border border-[#dce9e6] bg-white shadow-[0_12px_30px_rgba(15,118,110,0.06)]">
+                            <div className="flex flex-col gap-4 border-b border-[#e7efed] p-5 md:flex-row md:items-center md:justify-between">
+                                <div>
+                                    <h3 className="text-lg font-bold text-[#163432]">
+                                        Team members
+                                    </h3>
+                                    <p className="mt-1 text-sm text-[#7b918e]">
+                                        {filteredStaff.length} of {staff.length}{" "}
+                                        members shown
+                                    </p>
+                                </div>
+                                <ResourceToolbar
+                                    search={search}
+                                    onSearchChange={setSearch}
+                                    searchPlaceholder="Search name, role, department..."
+                                    filterValue={availability}
+                                    onFilterChange={setAvailability}
+                                    filterLabel="Filter by availability"
+                                    filterOptions={[
+                                        { label: "All statuses", value: "all" },
+                                        {
+                                            label: "Available",
+                                            value: "available",
+                                        },
+                                        {
+                                            label: "Unavailable",
+                                            value: "unavailable",
+                                        },
+                                    ]}
+                                />
                             </div>
-                            <ResourceToolbar
-                                search={search}
-                                onSearchChange={setSearch}
-                                searchPlaceholder="Search name, role, department..."
-                                filterValue={availability}
-                                onFilterChange={setAvailability}
-                                filterLabel="Filter by availability"
-                                filterOptions={[
-                                    { label: "All statuses", value: "all" },
-                                    { label: "Available", value: "available" },
-                                    {
-                                        label: "Unavailable",
-                                        value: "unavailable",
-                                    },
-                                ]}
-                            />
-                        </div>
 
-                        {isLoading ? (
-                            <ResourceLoading />
-                        ) : error ? (
-                            <ResourceState
-                                icon={<MdWarning />}
-                                title="Could not load the staff directory"
-                                description={error}
-                            />
-                        ) : filteredStaff.length === 0 ? (
-                            <ResourceState
-                                icon={<MdGroups />}
-                                title="No staff members found"
-                                description="Try another search or availability filter."
-                            />
-                        ) : (
-                            <div className="divide-y divide-[#edf3f1]">
-                                {filteredStaff.map((member) => (
-                                    <StaffRow
-                                        key={member.documentId || member.id}
-                                        member={member}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </section>
+                            {isLoading ? (
+                                <ResourceLoading />
+                            ) : error ? (
+                                <ResourceState
+                                    icon={<MdWarning />}
+                                    title="Could not load the staff directory"
+                                    description={error}
+                                />
+                            ) : filteredStaff.length === 0 ? (
+                                <ResourceState
+                                    icon={<MdGroups />}
+                                    title="No staff members found"
+                                    description="Try another search or availability filter."
+                                />
+                            ) : (
+                                <div className="divide-y divide-[#edf3f1]">
+                                    {filteredStaff.map((member) => (
+                                        <StaffRow
+                                            key={member.documentId || member.id}
+                                            member={member}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </section>
+                    </BtmToTop>
                 </div>
             </main>
+            <AddStaffModal
+                isOpen={isAddStaffOpen}
+                onClose={() => setIsAddStaffOpen(false)}
+                onCreated={() => setRefreshKey((current) => current + 1)}
+            />
         </>
     );
 };
