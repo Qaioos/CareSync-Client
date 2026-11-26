@@ -1,4 +1,6 @@
 export interface ShiftStaff {
+    id?: number;
+    documentId?: string;
     FullName?: string;
     username?: string;
 }
