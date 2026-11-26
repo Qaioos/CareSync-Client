@@ -2,16 +2,19 @@ import { useEffect, useState } from "react";
 import { useAxiosPrivate } from "../../Hook/RequestsWithToken/useAxiosPrivet";
 import axios from "axios";
 import useAuth from "../../Hook/authUser/useAuth";
+import type { DepartmentOverview } from "./department.types";
+import {
+    createEmptyDepartmentOverview,
+    normalizeDepartmentOverview,
+} from "./department.utils";
 
 const useDepartment = () => {
     const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
 
-    const [request, setRequests] = useState({
-        departmenticu: {},
-        departmentmAG_Sug: {},
-        departmenticu_Emrg: {},
-    });
+    const [departments, setDepartments] = useState<DepartmentOverview>(
+        createEmptyDepartmentOverview,
+    );
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [err, setErr] = useState<string>("");
 
@@ -26,23 +29,27 @@ const useDepartment = () => {
             try {
                 if (isMounted) setIsLoading(true);
 
-                const [icuRes, magSugRes, emrgRes] = await Promise.all([
-                    axiosPrivate.get("/department-metrics", {
-                        signal: controller.signal,
-                    }),
-                    axiosPrivate.get("/department-med-surgs", {
-                        signal: controller.signal,
-                    }),
-                    axiosPrivate.get("/department-emergencies", {
-                        signal: controller.signal,
-                    }),
-                ]);
+                const [icuResponse, emergencyResponse, medSurgResponse] =
+                    await Promise.all([
+                        axiosPrivate.get<unknown>("/department-metrics", {
+                            signal: controller.signal,
+                        }),
+                        axiosPrivate.get<unknown>(
+                            "/department-emergencies",
+                            { signal: controller.signal },
+                        ),
+                        axiosPrivate.get<unknown>("/department-med-surgs", {
+                            signal: controller.signal,
+                        }),
+                    ]);
                 if (isMounted) {
-                    setRequests({
-                        departmenticu: icuRes.data,
-                        departmentmAG_Sug: magSugRes.data,
-                        departmenticu_Emrg: emrgRes.data,
-                    });
+                    setDepartments(
+                        normalizeDepartmentOverview({
+                            icu: icuResponse.data,
+                            emergency: emergencyResponse.data,
+                            medSurg: medSurgResponse.data,
+                        }),
+                    );
                     setErr("");
                 }
             } catch (error: unknown) {
@@ -71,7 +78,7 @@ const useDepartment = () => {
             controller.abort();
         };
     }, [auth?.accrssToken, axiosPrivate]);
-    return { request, isLoading, err };
+    return { departments, isLoading, err };
 };
 
 export default useDepartment;

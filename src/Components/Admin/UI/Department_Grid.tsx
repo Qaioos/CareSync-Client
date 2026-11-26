@@ -1,183 +1,114 @@
+import { Link } from "react-router-dom";
+import { MdArrowOutward, MdWarning } from "react-icons/md";
 import useDepartment from "../../../Features/department/useDepartment";
-import type { Requests } from "../../../Types/api.responses";
-import Loading from "../../Ui/LodaingSign";
+import { DEPARTMENTS } from "../../../Features/department/department.config";
+import {
+    getDepartmentOccupancy,
+    getDepartmentStatusClassName,
+} from "../../../Features/department/department.utils";
+import {
+    ResourceLoading,
+    ResourceState,
+} from "../Shared/ResourceState";
 
 const Department_Grid = () => {
-    const { request, isLoading, err } = useDepartment();
+    const { departments, isLoading, err } = useDepartment();
 
-
-    /* 
-just add the real data from the request to the UI 
-and remove the hard coded data in the return statement
-*/
     if (isLoading) {
         return (
-            <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/*  <!-- ICU --> */}
-                <div className="bg-white rounded-xl card-shadow p-5 border-l-4 border-l-[#14B8A6]">
-                    <Loading
-                        fullPage={false}
-                        message="waiting for lodaing ..."
-                    />
-                </div>
-                {/*   <!-- ED --> */}
-                <div className="bg-white rounded-xl card-shadow p-5 border-l-4 border-l-[#14B8A6]">
-                    <Loading
-                        fullPage={false}
-                        message="waiting for lodaing ..."
-                    />
-                </div>
-                {/*    <!-- MedSurg --> */}
-                <div className="bg-white rounded-xl card-shadow p-5 border-l-4 border-l-[#14B8A6]">
-                    <Loading
-                        fullPage={false}
-                        message="waiting for lodaing ..."
-                    />
-                </div>
-            </div>
+            <section className="md:col-span-8">
+                <ResourceLoading rows={3} />
+            </section>
         );
     }
+
     if (err) {
         return (
-            <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/*  <!-- ICU --> */}
-                <div className="bg-white rounded-xl card-shadow p-5 border-l-4 border-l-[#14B8A6]"></div>
-                {/*   <!-- ED --> */}
-                <div className="bg-white rounded-xl card-shadow p-5 border-l-4 border-l-[#14B8A6]">
-                    <p className="text-center text-red-500">
-                        Download failed. Please try again.
-                    </p>
-                    <p className="text-center text-red-500">
-                        Or Refresh your browser.
-                    </p>
-                </div>
-                {/*    <!-- MedSurg --> */}
-                <div className="bg-white rounded-xl card-shadow p-5 border-l-4 border-l-[#14B8A6]"></div>
-            </div>
+            <section className="md:col-span-8 rounded-2xl border border-[#dce9e6] bg-white">
+                <ResourceState
+                    icon={<MdWarning />}
+                    title="Could not load departments"
+                    description={err}
+                />
+            </section>
         );
     }
 
-    const { departmenticu   , departmentmAG_Sug, departmenticu_Emrg } =
-        request as Requests;
-
-    console.log(departmenticu_Emrg);
-
-    const situationicu = departmenticu?.data?.[0]?.Situation;
-    const situationmAG_Sug = departmentmAG_Sug?.data?.[0]?.Situation;
-    const situationicu_Emrg = departmenticu_Emrg?.data?.[0]?.Situation;
-
-    // (Render-time calculation)
-    const badgeStyleicu =
-        situationicu !== "High Vol"
-            ? "bg-[#10B981]/20 text-[#047857]"
-            : "bg-[#F59E0B]/20 text-[#B45309]";
-    const badgeStylemAG_Sug =
-        situationmAG_Sug !== "High Vol"
-            ? "bg-[#10B981]/20 text-[#047857]"
-            : "bg-[#F59E0B]/20 text-[#B45309]";
-    const badgeStyleicu_Emrg =
-        situationicu_Emrg !== "High Vol"
-            ? "bg-[#10B981]/20 text-[#047857]"
-            : "bg-[#F59E0B]/20 text-[#B45309]";
-
     return (
-        <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/*  <!-- ICU --> */}
-            <div className="bg-white rounded-xl card-shadow p-5 border-l-4 border-l-[#14B8A6]">
-                <div className="flex justify-between items-start mb-4">
-                    <h4 className="material-symbols-outlined text-headline-sm text-on-surface">
-                        ICU
-                    </h4>
-                    <span
-                        className={`px-3 py-1 ${badgeStyleicu} material-symbols-outlined  text-label-sm rounded-full`}
+        <section
+            aria-label="Department overview"
+            className="grid grid-cols-1 gap-6 md:col-span-8 md:grid-cols-3"
+        >
+            {DEPARTMENTS.map((config) => {
+                const department = departments[config.key];
+                const situation = department?.Situation || "Status unavailable";
+                const occupancy = department
+                    ? getDepartmentOccupancy(department)
+                    : 0;
+
+                return (
+                    <Link
+                        key={config.key}
+                        to={`/admin/departments/${config.key}`}
+                        className="group rounded-xl border border-[#dce9e6] border-l-4 bg-white p-5 shadow-[0_8px_24px_rgba(15,118,110,0.04)] outline-none transition hover:-translate-y-1 hover:shadow-[0_14px_28px_rgba(15,118,110,0.12)] focus-visible:ring-2 focus-visible:ring-primary"
+                        style={{ borderLeftColor: config.accent }}
+                        aria-label={`View ${config.name} department details`}
                     >
-                        {departmenticu.data?.[0]?.Situation}
-                    </span>
-                </div>
-                <div className="flex justify-between items-end">
-                    <div>
-                        <span className="material-symbols-outlined text-headline-md text-primary block">
-                            1:2
-                        </span>
-                        <span className="material-symbols-outlined   text-label-sm text-on-surface-variant">
-                            Ratio
-                        </span>
-                    </div>
-                    <div className="text-right">
-                        <span className="material-symbols-outlined text-body-md text-on-surface block">
-                            {departmenticu.data?.[0]?.ActiveBeds || 0}/
-                            {departmenticu.data?.[0]?.TotalBeds || 0}
-                        </span>
-                        <span className="material-symbols-outlined   text-label-sm text-on-surface-variant">
-                            Beds Active
-                        </span>
-                    </div>
-                </div>
-            </div>
-            {/*   <!-- ED --> */}
-            <div className="bg-white rounded-xl card-shadow p-5 border-l-4 border-l-[#F59E0B]">
-                <div className="flex justify-between items-start mb-4">
-                    <h4 className="material-symbols-outlinedtext-headline-sm text-on-surface">
-                        Emergency
-                    </h4>
-                    <span
-                        className={`px-3 py-1 ${badgeStyleicu_Emrg} material-symbols-outlined   text-label-sm rounded-full`}
-                    >
-                        {departmenticu_Emrg.data?.[0]?.Situation}
-                    </span>
-                </div>
-                <div className="flex justify-between items-end">
-                    <div>
-                        <span className="material-symbols-outlined  text-headline-md text-primary block">
-                            1:4
-                        </span>
-                        <span className="material-symbols-outlined   text-label-sm text-on-surface-variant">
-                            Ratio
-                        </span>
-                    </div>
-                    <div className="text-right">
-                        <span className="font-body-md text-body-md text-on-surface block">
-                            {departmenticu_Emrg.data?.[0]?.WaitingCount || 0}
-                        </span>
-                        <span className="material-symbols-outlined   text-label-sm text-on-surface-variant">
-                            Waiting
-                        </span>
-                    </div>
-                </div>
-            </div>
-            {/*    <!-- MedSurg --> */}
-            <div className="bg-white rounded-xl card-shadow p-5 border-l-4 border-l border-[#10B981]">
-                <div className="flex justify-between items-start mb-4">
-                    <h4 className="material-symbols-outlined text-headline-sm text-on-surface">
-                        Med/Surg
-                    </h4>
-                    <span
-                        className={`px-3 py-1 ${badgeStylemAG_Sug} material-symbols-outlined   text-label-sm rounded-full`}
-                    >
-                        {departmentmAG_Sug.data?.[0]?.Situation}
-                    </span>
-                </div>
-                <div className="flex justify-between items-end">
-                    <div>
-                        <span className="material-symbols-outlined text-headline-md text-primary block">
-                            1:5
-                        </span>
-                        <span className="material-symbols-outlined   text-label-sm text-on-surface-variant">
-                            Ratio
-                        </span>
-                    </div>
-                    <div className="text-right">
-                        <span className="material-symbols-outlined text-body-md text-on-surface block">
-                            {departmentmAG_Sug.data?.[0]?.ActiveBeds || 0}/
-                            {departmentmAG_Sug.data?.[0]?.TotalBeds || 0}
-                        </span>
-                        <span className="material-symbols-outlined   text-label-sm text-on-surface-variant">
-                            Beds Active
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        <div className="mb-4 flex items-start justify-between gap-3">
+                            <div>
+                                <h2 className="text-lg font-bold text-[#163432]">
+                                    {config.name}
+                                </h2>
+                                <p className="mt-1 text-xs text-[#7b918e]">
+                                    Nurse ratio {config.nurseRatio}
+                                </p>
+                            </div>
+                            <span
+                                className={`rounded-full px-3 py-1 text-xs font-bold ${getDepartmentStatusClassName(department?.Situation)}`}
+                            >
+                                {situation}
+                            </span>
+                        </div>
+
+                        <div className="flex items-end justify-between gap-4">
+                            <div>
+                                <p className="text-2xl font-extrabold text-primary-container">
+                                    {department?.ActiveBeds ?? 0}/
+                                    {department?.TotalBeds ?? 0}
+                                </p>
+                                <p className="text-xs text-[#7b918e]">
+                                    Active beds
+                                </p>
+                            </div>
+                            {config.key === "emergency" && (
+                                <div className="text-right">
+                                    <p className="text-lg font-bold text-[#163432]">
+                                        {department?.WaitingCount ?? 0}
+                                    </p>
+                                    <p className="text-xs text-[#7b918e]">
+                                        Waiting
+                                    </p>
+                                </div>
+                            )}
+                            <span className="flex items-center gap-1 text-xs font-bold text-primary-container opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100">
+                                Details
+                                <MdArrowOutward aria-hidden="true" />
+                            </span>
+                        </div>
+                        <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#edf3f1]">
+                            <div
+                                className="h-full rounded-full bg-primary-container"
+                                style={{ width: `${occupancy}%` }}
+                            />
+                        </div>
+                        <p className="mt-1 text-right text-[11px] text-[#7b918e]">
+                            {Math.round(occupancy)}% bed occupancy
+                        </p>
+                    </Link>
+                );
+            })}
+        </section>
     );
 };
+
 export default Department_Grid;

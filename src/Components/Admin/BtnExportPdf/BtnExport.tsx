@@ -2,17 +2,11 @@ import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import MedicalReport from "./MedicalReport"; // استدعاء المكون الجديد الذي صممناه أعلى
 import useDepartment from "../../../Features/department/useDepartment";
-import type { Requests } from "../../../Types/api.responses";
 
 import { useFetchAlerts } from "../../../Features/requests/AdminRequests";
 
 export default function BtnExport() {
-    // useDepartment Temporary fix. Backend API is incorrectly returning an Array instead of an Object.
-    // Handling it as an array for now until the backend team resolves the issue.
-
-    const { request: departmentData } = useDepartment();
-    const { departmenticu, departmentmAG_Sug, departmenticu_Emrg } =
-        departmentData as Requests;
+    const { departments: departmentData } = useDepartment();
 
     const { request: alertsArray } = useFetchAlerts();
 
@@ -26,20 +20,20 @@ export default function BtnExport() {
             {
                 name: "ICU",
                 ratio: "1:2",
-                occupancy: `${departmenticu?.data?.[0]?.ActiveBeds} : ${departmenticu?.data?.[0]?.TotalBeds}`,
-                status: `${departmenticu?.data?.[0]?.Situation}`,
+                occupancy: `${departmentData.icu?.ActiveBeds ?? 0} : ${departmentData.icu?.TotalBeds ?? 0}`,
+                status: departmentData.icu?.Situation || "Unavailable",
             },
             {
                 name: "Emergency",
                 ratio: "1:4",
-                occupancy: `${departmenticu_Emrg.data?.[0]?.WaitingCount} WaitingCount`,
-                status: `${departmenticu_Emrg?.data?.[0]?.Situation}`,
+                occupancy: `${departmentData.emergency?.WaitingCount ?? 0} Waiting`,
+                status: departmentData.emergency?.Situation || "Unavailable",
             },
             {
                 name: "Med/Surg",
                 ratio: "1:5",
-                occupancy: `${departmentmAG_Sug?.data?.[0]?.ActiveBeds} : ${departmentmAG_Sug?.data?.[0]?.TotalBeds}`,
-                status: `${departmentmAG_Sug?.data?.[0]?.Situation}`,
+                occupancy: `${departmentData.medSurg?.ActiveBeds ?? 0} : ${departmentData.medSurg?.TotalBeds ?? 0}`,
+                status: departmentData.medSurg?.Situation || "Unavailable",
             },
         ],
         alerts: Array.isArray(alertsArray) ? alertsArray : [],
