@@ -1,75 +1,123 @@
-# React + TypeScript + Vite
+# CareSync Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+CareSync is a web-based clinical operations dashboard for hospital administrators and clinical staff. It brings department capacity, staffing, schedules, operational requests, and team management together in one interface.
 
-Currently, two official plugins are available:
+This repository contains the **React frontend**. It communicates with the CareSync API for authentication and operational data.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Contents
 
-## React Compiler
+- [Features](#features)
+- [Technology stack](#technology-stack)
+- [Getting started](#getting-started)
+- [Available scripts](#available-scripts)
+- [Application routes](#application-routes)
+- [Project structure](#project-structure)
+- [API configuration](#api-configuration)
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Features
 
-Note: This will impact Vite dev & build performances.
+### Administrator workspace
 
-## Expanding the ESLint configuration
+- Operational dashboard with department, staffing, and shift summaries.
+- Department detail pages with department status, capacity metrics, API-provided department data, and assigned staff.
+- Printable department reports.
+- Staff directory with search and availability filters.
+- Staff profiles with editable account and clinical details, account status controls, password reset, and assigned shifts.
+- Shift scheduling and staff assignment.
+- Analytics for staffing, department capacity, and operational requests.
+- Notifications and request monitoring.
+- Task creation and assignment to clinical staff.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Clinical staff workspace
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Role-protected route for authenticated clinical staff.
+- The staff-facing page is currently a placeholder for future clinical workflows.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Technology stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **React 19** and **TypeScript**
+- **Vite** for local development and production builds
+- **React Router** for application routing
+- **Tailwind CSS** for styling
+- **Axios** for API communication
+- **Recharts** for dashboard visualizations
+- **Framer Motion** for interface transitions
+- **React Hot Toast** for user feedback
+- **React to Print** for printable reports
+
+## Getting started
+
+### Prerequisites
+
+- Node.js and npm
+- The CareSync API running and reachable from the frontend
+
+### Install dependencies
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Configure the API
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The API base URL is currently configured in [`src/Config/axios.ts`](src/Config/axios.ts) and defaults to:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+http://localhost:1337/api
 ```
+
+Start the backend at that address, or update the base URL to match your API environment.
+
+### Start the development server
+
+```bash
+npm run dev
+```
+
+Vite prints the local development URL in the terminal after startup.
+
+## Available scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Vite development server. |
+| `npm run build` | Run the TypeScript project build and create production assets. |
+| `npm run preview` | Preview the production build locally. |
+| `npm run lint` | Run ESLint across the project. |
+
+## Application routes
+
+| Route | Access | Description |
+| --- | --- | --- |
+| `/login` | Public | Sign in to CareSync. |
+| `/sign-up` | Public | Register an account. |
+| `/nuse` | Authenticated staff | Staff-facing workspace. |
+| `/admin` | Administrator | Operations dashboard. |
+| `/admin/departments/:departmentKey` | Administrator | Department details and printable report. |
+| `/admin/staff` | Administrator | Staff directory. |
+| `/admin/staff/:userId` | Administrator | Staff profile and account management. |
+| `/admin/scheduling` | Administrator | Shift schedule management. |
+| `/admin/analytics` | Administrator | Operational analytics. |
+| `/admin/notifications` | Administrator | Notifications and requests. |
+| `/admin/profile` | Administrator | Administrator profile settings. |
+
+## Project structure
+
+```text
+src/
+├── Components/     Reusable UI, layouts, and feature-specific components
+├── Config/         Axios and application configuration
+├── Features/       Feature hooks, domain types, and data transformations
+├── Hook/           Authentication and authenticated API hooks
+├── Pages/          Route-level page components
+├── Routes/         Protected route handling and route helpers
+└── Types/          Shared API and application types
+```
+
+Feature-specific data loading and transformations live in `Features/`. Route-level pages in `Pages/` compose reusable components from `Components/`.
+
+## API configuration
+
+The frontend expects an authenticated API compatible with the endpoints used by the application, including user, department, shift, request, and task resources. Authenticated requests attach the access token through the private Axios client.
+
+Ensure the backend is available and that its CORS configuration permits requests from the Vite development origin.
