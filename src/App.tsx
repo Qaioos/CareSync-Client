@@ -6,6 +6,7 @@ import ProtectedRoute from "./Routes/ProtectedRoute";
 import Nuse from "./Pages/Nuse";
 import Admin from "./Pages/Admin";
 import Staff from "./Pages/Staff.tsx";
+import StaffProfile from "./Pages/StaffProfile.tsx";
 import Scheduling from "./Pages/Scheduling.tsx";
 import Analytics from "./Pages/Analytics.tsx";
 import Notifications from "./Pages/Notifications.tsx";
@@ -46,6 +47,10 @@ function App() {
                     <Route element={<ProtectedRoute allowedRoles="Admin" />}>
                         <Route path="admin" element={<Admin />} />
                         <Route path="admin/staff" element={<Staff />} />
+                        <Route
+                            path="admin/staff/:userId"
+                            element={<StaffProfile />}
+                        />
                         <Route
                             path="admin/scheduling"
                             element={<Scheduling />}
