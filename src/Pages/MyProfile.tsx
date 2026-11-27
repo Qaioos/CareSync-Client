@@ -18,8 +18,11 @@ const MyProfile = () => {
         isSaving,
         error,
         loadError,
+        isUploadingAvatar,
+        avatarError,
         updateFullName,
         saveProfile,
+        uploadAvatar,
     } = useMyProfile();
     const { auth } = useAuth();
 
@@ -61,6 +64,9 @@ const MyProfile = () => {
                                 <ProfileIdentityCard
                                     profile={profile}
                                     fallbackRole={auth.rols}
+                                    isUploadingAvatar={isUploadingAvatar}
+                                    avatarError={avatarError}
+                                    onAvatarChange={uploadAvatar}
                                 />
                                 <ProfileDetailsForm
                                     profile={profile}
