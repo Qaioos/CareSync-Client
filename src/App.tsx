@@ -12,6 +12,7 @@ import Scheduling from "./Pages/Scheduling.tsx";
 import Analytics from "./Pages/Analytics.tsx";
 import Notifications from "./Pages/Notifications.tsx";
 import MyProfile from "./Pages/MyProfile.tsx";
+import Settings from "./Pages/Settings.tsx";
 import useAuth from "./Hook/authUser/useAuth";
 
 import { Toaster } from "react-hot-toast";
@@ -66,6 +67,7 @@ function App() {
                             element={<Notifications />}
                         />
                         <Route path="admin/profile" element={<MyProfile />} />
+                        <Route path="admin/settings" element={<Settings />} />
                     </Route>
                 </Route>
             </Routes>

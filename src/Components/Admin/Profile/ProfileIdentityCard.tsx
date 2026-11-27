@@ -1,34 +1,34 @@
-import {
-    MdBadge,
-    MdCheckCircle,
-    MdEmail,
-    MdLocalHospital,
-    MdPerson,
-} from "react-icons/md";
+import { MdBadge, MdCheckCircle, MdEmail, MdLocalHospital } from "react-icons/md";
 import type { StrapiUser } from "../../../Types/api.responses";
-import {
-    getProfileDisplayName,
-    getProfileInitials,
-} from "../../../Features/profile/profile.utils";
+import { getProfileDisplayName } from "../../../Features/profile/profile.utils";
+import ProfileAvatarField from "./ProfileAvatarField";
 
 interface ProfileIdentityCardProps {
     profile: StrapiUser;
     fallbackRole: string | null;
+    isUploadingAvatar: boolean;
+    avatarError: string;
+    onAvatarChange: (file: File) => Promise<boolean>;
 }
 
 const ProfileIdentityCard = ({
     profile,
     fallbackRole,
+    isUploadingAvatar,
+    avatarError,
+    onAvatarChange,
 }: ProfileIdentityCardProps) => {
     const displayName = getProfileDisplayName(profile);
-    const initials = getProfileInitials(displayName);
 
     return (
         <section className="rounded-2xl border border-[#dce9e6] bg-white p-6 shadow-[0_12px_30px_rgba(15,118,110,0.05)] lg:col-span-4">
             <div className="flex flex-col items-center text-center">
-                <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-[#d9efea] text-2xl font-extrabold text-primary-container shadow-[0_0_0_1px_#dce9e6]">
-                    {initials || <MdPerson aria-hidden="true" />}
-                </div>
+                <ProfileAvatarField
+                    profile={profile}
+                    isUploading={isUploadingAvatar}
+                    error={avatarError}
+                    onChange={onAvatarChange}
+                />
                 <h2 className="mt-4 text-xl font-extrabold text-[#163432]">
                     {displayName}
                 </h2>

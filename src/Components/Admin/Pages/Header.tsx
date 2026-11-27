@@ -1,11 +1,16 @@
 import { MdMenu, MdNotifications, MdSettings, MdSearch } from "react-icons/md";
 import { Link } from "react-router-dom";
+import useAuth from "../../../Hook/authUser/useAuth";
+import { getProfileAvatarUrl } from "../../../Features/profile/profile.utils";
 
 interface HeaderProps {
     onOpenNavigation: () => void;
 }
 
 const Header = ({ onOpenNavigation }: HeaderProps) => {
+    const { auth } = useAuth();
+    const avatarUrl = getProfileAvatarUrl(auth.user);
+
     return (
         <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#dce9e6] bg-white/90 px-4 shadow-[0_4px_18px_rgba(15,23,42,0.04)] backdrop-blur-xl md:left-72 md:px-8">
             <button
@@ -34,24 +39,36 @@ const Header = ({ onOpenNavigation }: HeaderProps) => {
                 >
                     <MdNotifications className="text-xl" />
                 </button>
-                <button
+                <Link
+                    to="/admin/settings"
                     aria-label="Settings"
+                    title="Settings"
                     className="rounded-xl p-2 text-[#607774] transition-all hover:bg-[#e8f4f1] hover:text-primary-container focus:ring-2 focus:ring-primary/20"
                 >
                     <MdSettings className="text-xl" />
-                </button>
+                </Link>
                 <Link
                     to="/admin/profile"
                     aria-label="My profile"
                     title="My profile"
                     className="ml-2 flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-white bg-[#d8ebe7] shadow-sm transition hover:ring-2 hover:ring-primary/30 focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                    <img
-                        alt="Administrator Profile"
-                        className="w-full h-full object-cover"
-                        data-alt="A professional headshot of a confident female healthcare administrator in a bright, modern clinical setting. Soft, natural lighting. Dressed in business casual attire with a subtle stethoscope."
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJDWjh5-VyOMTaw6HRfWQAppMcebNw1gyvkQdqZZUHF9F9CBF8eUYSlv9o9FH3e1KWPPyCgxZX8drU_73qrHu1iKf6f3YLl8xmOSsr2FocpJp5ISFkaiy42W1YNMzn75SAT3vZ4JXIF8DhChvDXHaHLVdu-ZnV25sFU9_9px0-DXSVKR8hYGCtEeIDIje12PRyGdhyAXNlnx9Yct_5zEVzxvYG1aMaqgEVOPM7SxX5USgjIXAaSL6BYiy-qOLcMllRspQD0SGuKqxF"
-                    />
+                    {avatarUrl ? (
+                        <img
+                            alt="Administrator profile"
+                            className="h-full w-full object-cover"
+                            src={avatarUrl}
+                        />
+                    ) : (
+                        <span className="text-xs font-bold text-primary-container">
+                            {(auth.user?.FullName || auth.user?.username || "AD")
+                                .split(" ")
+                                .slice(0, 2)
+                                .map((name) => name[0])
+                                .join("")
+                                .toUpperCase()}
+                        </span>
+                    )}
                 </Link>
             </div>
         </header>

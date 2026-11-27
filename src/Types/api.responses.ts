@@ -6,6 +6,19 @@ export interface UserRole {
     createdAt: string;
     updatedAt: string;
 }
+export interface StrapiMedia {
+    id: number;
+    documentId?: string;
+    url: string;
+    alternativeText?: string | null;
+    formats?: Record<string, { url: string }>;
+}
+
+export type StrapiMediaValue =
+    | StrapiMedia
+    | { data: StrapiMedia | null }
+    | null;
+
 export interface StrapiUser {
     id: number;
     documentId: string;
@@ -23,6 +36,7 @@ export interface StrapiUser {
     IsAvailabale: boolean | null;
     Title_Degree: string | null;
     Unit_Floor: string | null;
+    Avatar?: StrapiMediaValue;
     // populate=role
     role?: UserRole;
 }
