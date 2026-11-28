@@ -54,7 +54,7 @@ const Nurse_Coverage = () => {
     ];
 
     return (
-        <div className="bg-white rounded-xl card-shadow p-6 flex flex-col justify-between hover:shadow-lg transition-shadow duration-300 w-full max-w-[700px]">
+        <div className="bg-white w-full rounded-xl card-shadow p-6 flex flex-col justify-between hover:shadow-lg transition-shadow duration-300 hover:scale-[1.01] transition-transform">  
             <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                 <div>
                     <h3 className="text-xl font-bold text-gray-800 mb-1">
@@ -76,7 +76,7 @@ const Nurse_Coverage = () => {
                 </div>
             </div>
 
-            <div className="w-full h-[300px] relative">
+            <div className="w-full h-[250px] relative">
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                         data={chartData}

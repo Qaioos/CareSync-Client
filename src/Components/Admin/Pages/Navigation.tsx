@@ -8,12 +8,19 @@ import {
     MdNotifications,
     MdSettings,
 } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 interface NavigationProps {
     isOpen: boolean;
     onClose: () => void;
 }
+
+const getNavigationClassName = ({ isActive }: { isActive: boolean }) =>
+    `group flex items-center gap-4 rounded-xl px-4 py-3 transition-all duration-200 active:scale-[0.98] ${
+        isActive
+            ? "-translate-y-0.5 border border-[#bfe5de] bg-[#e5f5f1] font-bold text-primary-container shadow-sm"
+            : "font-medium text-[#607774] hover:translate-x-1 hover:bg-[#e8f4f1] hover:text-primary-container"
+    }`;
 
 const Navigation = ({ isOpen, onClose }: NavigationProps) => {
     return (
@@ -55,8 +62,9 @@ const Navigation = ({ isOpen, onClose }: NavigationProps) => {
                     Workspace
                 </div>
                 <div className="flex flex-1 flex-col gap-1 px-0">
-                    <Link
-                        className="group flex items-center gap-4 rounded-xl border border-[#bfe5de] bg-[#e5f5f1] px-4 py-3 font-bold text-primary-container shadow-sm transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
+                    <NavLink
+                        end
+                        className={getNavigationClassName}
                         to="/admin"
                         onClick={onClose}
                     >
@@ -65,17 +73,17 @@ const Navigation = ({ isOpen, onClose }: NavigationProps) => {
                             aria-hidden="true"
                         />
                         <span className="text-sm">Dashboard</span>
-                    </Link>
-                    <Link
-                        className="group flex items-center gap-4 rounded-xl px-4 py-3 font-medium text-[#607774] transition-all duration-200 hover:translate-x-1 hover:bg-[#e8f4f1] hover:text-primary-container active:scale-[0.98]"
+                    </NavLink>
+                    <NavLink
+                        className={getNavigationClassName}
                         to="/admin/staff"
                         onClick={onClose}
                     >
                         <MdGroups className="text-[21px]" aria-hidden="true" />
                         <span className="text-sm">Staff</span>
-                    </Link>
-                    <Link
-                        className="group flex items-center gap-4 rounded-xl px-4 py-3 font-medium text-[#607774] transition-all duration-200 hover:translate-x-1 hover:bg-[#e8f4f1] hover:text-primary-container active:scale-[0.98]"
+                    </NavLink>
+                    <NavLink
+                        className={getNavigationClassName}
                         to="/admin/scheduling"
                         onClick={onClose}
                     >
@@ -84,9 +92,9 @@ const Navigation = ({ isOpen, onClose }: NavigationProps) => {
                             aria-hidden="true"
                         />
                         <span className="text-sm">Scheduling</span>
-                    </Link>
-                    <Link
-                        className="group flex items-center gap-4 rounded-xl px-4 py-3 font-medium text-[#607774] transition-all duration-200 hover:translate-x-1 hover:bg-[#e8f4f1] hover:text-primary-container active:scale-[0.98]"
+                    </NavLink>
+                    <NavLink
+                        className={getNavigationClassName}
                         to="/admin/analytics"
                         onClick={onClose}
                     >
@@ -95,9 +103,9 @@ const Navigation = ({ isOpen, onClose }: NavigationProps) => {
                             aria-hidden="true"
                         />
                         <span className="text-sm">Analytics</span>
-                    </Link>
-                    <Link
-                        className="group flex items-center gap-4 rounded-xl px-4 py-3 font-medium text-[#607774] transition-all duration-200 hover:translate-x-1 hover:bg-[#e8f4f1] hover:text-primary-container active:scale-[0.98]"
+                    </NavLink>
+                    <NavLink
+                        className={getNavigationClassName}
                         to="/admin/notifications"
                         onClick={onClose}
                     >
@@ -106,9 +114,9 @@ const Navigation = ({ isOpen, onClose }: NavigationProps) => {
                             aria-hidden="true"
                         />
                         <span className="text-sm">Notifications</span>
-                    </Link>
-                    <Link
-                        className="group flex items-center gap-4 rounded-xl px-4 py-3 font-medium text-[#607774] transition-all duration-200 hover:translate-x-1 hover:bg-[#e8f4f1] hover:text-primary-container active:scale-[0.98]"
+                    </NavLink>
+                    <NavLink
+                        className={getNavigationClassName}
                         to="/admin/settings"
                         onClick={onClose}
                     >
@@ -117,7 +125,7 @@ const Navigation = ({ isOpen, onClose }: NavigationProps) => {
                             aria-hidden="true"
                         />
                         <span className="text-sm">Settings</span>
-                    </Link>
+                    </NavLink>
                 </div>
                 <div className="mt-8 rounded-2xl border border-[#dce9e6] bg-white p-3 shadow-[0_8px_20px_rgba(15,118,110,0.05)]">
                     <div className="flex items-center gap-3">
