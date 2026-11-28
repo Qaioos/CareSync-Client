@@ -1,10 +1,6 @@
+import NurseDashboard from "../Components/Nurse/Dashboard/NurseDashboard";
 
-const Nuse = () => {
-  return (
-    <div>
-      hi this pagefore  nuse 
-    </div>
-  )
-}
+// Nurse workspace with shift details, task checklist, and assigned patients.
+const Nuse = () => <NurseDashboard />;
 
-export default Nuse
+export default Nuse;
